@@ -65,19 +65,6 @@
   font-weight: 600;
 }
 
-/* Sample log card */
-.log-card { background: #0f172a; color: #cbd5e1; }
-.log-card .card-header {
-  background: #1e293b;
-  color: #94a3b8;
-  border-bottom: 1px solid #334155;
-}
-.log-card pre {
-  font-size: 0.8rem;
-  line-height: 1.9;
-  color: inherit;
-  overflow-x: auto;
-}
-.log-card .k { color: #64748b; }
-.log-card .b { color: #7dd3fc; }
-.log-card .m { color: #fbbf24; }
+h1.text-balance { text-wrap: balance; }
+.link-card { transition: border-color .15s, box-shadow .15s; }
+.link-card:hover { border-color: var(--bs-primary-border-subtle); box-shadow: 0 .5rem 1rem rgba(0,0,0,.06); }
