@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Approach | shoo.ai</title>
+  <meta name="description" content="How shoo.ai creates synthetic security data: simulated organizations, realistic activity, and fully labeled, privacy-safe datasets.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="shoo.ai">
+  <meta property="og:title" content="Approach | shoo.ai">
+  <meta property="og:description" content="How shoo.ai creates synthetic security data: simulated organizations, realistic activity, and fully labeled, privacy-safe datasets.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+      <nav aria-label="Main"><a href="mission.html">Mission</a><a href="approach.html" aria-current="page">Approach</a><a href="contact.html">Contact</a></nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero compact">
+      <div class="container">
+        <p class="eyebrow">Approach</p>
+        <h1>How we create synthetic security data</h1>
+        <p class="lead">We simulate realistic organizations end to end and record what their defenders would see. The result is data that looks and behaves like the real thing, with complete ground truth and no sensitive information.</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="label">// the process</p>
+          <h2>From simulation to dataset</h2>
+        </div>
+        <ol class="steps">
+          <li><div><h3>Model realistic environments</h3><p>Simulated organizations with users, workstations, servers and the network activity that connects them.</p></div></li>
+          <li><div><h3>Generate everyday activity</h3><p>Simulated employees browse, email, write documents and log in, producing the background noise real defenders face every day.</p></div></li>
+          <li><div><h3>Emulate adversary behavior</h3><p>Known attack techniques, aligned with the MITRE ATT&amp;CK&reg; framework, are carried out in a controlled setting alongside normal activity.</p></div></li>
+          <li><div><h3>Capture what defenders see</h3><p>Logs, endpoint telemetry and detection alerts are collected the same way a security team would collect them.</p></div></li>
+          <li><div><h3>Label and package</h3><p>Every event is tied to ground truth (benign or malicious, and which technique) and delivered as a clean, privacy-safe dataset.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="label">// why synthetic</p>
+          <h2>The advantages of simulated data</h2>
+        </div>
+        <div class="grid three">
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3>Privacy-safe</h3>
+          <p>No real people, credentials or networks are involved, so datasets can be shared without legal review.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div>
+          <h3>Fully labeled</h3>
+          <p>Because we control the scenario, we know exactly which events are malicious and why.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></div>
+          <h3>Controllable and repeatable</h3>
+          <p>Scenarios can be adjusted and re-run, so datasets can be tailored and reproduced.</p>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <h2>Interested in what we're building?</h2>
+        <p>We'd like to hear from researchers, security teams and investors who care about this problem.</p>
+        <div class="actions"><a class="btn primary" href="contact.html">Get in touch</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div>
+        <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+        <p class="tag">Realistic synthetic data for cybersecurity.</p>
+      </div>
+      <nav aria-label="Footer"><a href="index.html">Home</a><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
+      <div class="meta">
+        <p>Palo Alto, CA</p>
+        <p>&copy; 2026 shoo.ai</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

@@ -4,26 +4,144 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>shoo.ai</title>
-  <meta name="description" content="Realistic synthetic data for cybersecurity.">
+  <meta name="description" content="shoo.ai creates realistic synthetic cybersecurity datasets to advance defensive AI, support security research, and evaluate SOC solutions.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="shoo.ai">
+  <meta property="og:title" content="shoo.ai">
+  <meta property="og:description" content="shoo.ai creates realistic synthetic cybersecurity datasets to advance defensive AI, support security research, and evaluate SOC solutions.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <header class="site-header">
+    <div class="container">
+      <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+      <nav aria-label="Main"><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
+    </div>
+  </header>
+
   <main>
-    <h1 class="wordmark" aria-label="shoo.ai">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></h1>
+    <div class="hero">
+      <div class="container">
+        <div>
+          <p class="eyebrow">Now in development</p>
+          <h1>Realistic security data, <em>without the real-world risk.</em></h1>
+          <p class="lead">shoo.ai creates synthetic cybersecurity datasets: logs, telemetry and detections that look and behave like a real organization's, with none of the privacy constraints.</p>
+          <div class="actions">
+            <a class="btn primary" href="mission.html">Read our mission</a>
+            <a class="btn" href="approach.html">How it works</a>
+          </div>
+        </div>
+        <div>
+          <div class="log-card">
+            <div class="bar"><i></i><i></i><i></i><span>synthetic-events.log</span></div>
+            <pre><span class="k">09:14:02</span>  fin-ws-014  outlook.exe          <span class="b">benign</span>
+<span class="k">09:14:07</span>  fin-ws-014  chrome.exe           <span class="b">benign</span>
+<span class="k">09:15:31</span>  hr-ws-003   winword.exe          <span class="b">benign</span>
+<span class="k">09:16:48</span>  fin-ws-014  powershell.exe -enc  <span class="m">T1059.001</span>
+<span class="k">09:16:49</span>  fin-ws-014  rundll32.exe         <span class="m">T1218.011</span>
+<span class="k">09:17:10</span>  dc-01       logon (type 3)       <span class="b">benign</span>
+<span class="k">09:17:12</span>  dc-01       kerberos tgs-req     <span class="m">T1558.003</span>
+<span class="k">09:18:05</span>  hr-ws-003   teams.exe            <span class="b">benign</span></pre>
+          </div>
+          <p class="log-caption">Illustrative example of synthetic events. Not real data.</p>
+        </div>
+      </div>
+    </div>
 
-    <p class="tagline">Realistic synthetic data for cybersecurity.</p>
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="label">// the problem</p>
+          <h2>Security AI is only as good as its data.</h2>
+          <p>Defenders increasingly rely on machine learning and AI agents to keep up with attackers. But realistic, high-quality security data is one of the hardest things to come by.</p>
+        </div>
+        <div class="grid three">
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3>Locked behind privacy</h3>
+          <p>Real logs contain sensitive details about people, systems and networks, so organizations rarely share them.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+          <h3>Scarce public datasets</h3>
+          <p>The open datasets that do exist are small, dated, or too clean to reflect how real environments behave.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h3>Costly to collect</h3>
+          <p>Producing labeled data from real environments takes significant time from engineering, security and legal teams.</p>
+        </div>
+        </div>
+      </div>
+    </section>
 
-    <p>High-quality security log and detection data is rare, because real data is locked behind privacy restrictions. shoo.ai generates realistic synthetic cybersecurity datasets to:</p>
-    <ul>
-      <li>advance defensive AI</li>
-      <li>supply researchers with realistic data</li>
-      <li>evaluate SOC solutions</li>
-    </ul>
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="label">// what we build</p>
+          <h2>Synthetic data that behaves like the real thing.</h2>
+          <p>We generate realistic, fully labeled cybersecurity datasets for three purposes.</p>
+        </div>
+        <div class="grid three">
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
+          <h3>Advance defensive AI</h3>
+          <p>Training and testing data for models and agents that detect and respond to threats.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/></svg></div>
+          <h3>Supply researchers</h3>
+          <p>Realistic, shareable datasets for academic and industry security research.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg></div>
+          <h3>Evaluate SOC solutions</h3>
+          <p>A consistent, repeatable basis for understanding how security tools perform.</p>
+        </div>
+        </div>
+      </div>
+    </section>
 
-    <span class="status">Currently in development</span>
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <p class="label">// goals</p>
+          <h2>What we're working toward</h2>
+        </div>
+        <ol class="steps">
+          <li><div><h3>Make realistic security data accessible</h3><p>Give researchers and builders datasets they can actually use and share, without privacy trade-offs.</p></div></li>
+          <li><div><h3>Reflect real environments</h3><p>Capture the noise, variety and everyday activity of real organizations, not just attacks in isolation.</p></div></li>
+          <li><div><h3>Label everything</h3><p>Provide ground truth for every event, so data is useful for both training and measurement.</p></div></li>
+          <li><div><h3>Build a common foundation</h3><p>Give the security community a shared, transparent basis for building and measuring defenses.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <h2>Interested in what we're building?</h2>
+        <p>We'd like to hear from researchers, security teams and investors who care about this problem.</p>
+        <div class="actions"><a class="btn primary" href="contact.html">Get in touch</a></div>
+      </div>
+    </section>
   </main>
 
-  <footer>&copy; 2026 shoo.ai</footer>
+  <footer class="site-footer">
+    <div class="container">
+      <div>
+        <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+        <p class="tag">Realistic synthetic data for cybersecurity.</p>
+      </div>
+      <nav aria-label="Footer"><a href="index.html">Home</a><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
+      <div class="meta">
+        <p>Palo Alto, CA</p>
+        <p>&copy; 2026 shoo.ai</p>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
