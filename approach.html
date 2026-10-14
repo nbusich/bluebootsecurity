@@ -10,91 +10,123 @@
   <meta property="og:title" content="Approach | shoo.ai">
   <meta property="og:description" content="How shoo.ai creates synthetic security data: simulated organizations, realistic activity, and fully labeled, privacy-safe datasets.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+  <link rel="stylesheet" href="custom.css">
 </head>
-<body>
-  <header class="site-header">
-    <div class="container">
-      <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
-      <nav aria-label="Main"><a href="mission.html">Mission</a><a href="approach.html" aria-current="page">Approach</a><a href="contact.html">Contact</a></nav>
-    </div>
-  </header>
-
-  <main>
-    <div class="hero compact">
-      <div class="container">
-        <p class="eyebrow">Approach</p>
-        <h1>How we create synthetic security data</h1>
-        <p class="lead">We simulate realistic organizations end to end and record what their defenders would see. The result is data that looks and behaves like the real thing, with complete ground truth and no sensitive information.</p>
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="mission.html">Mission</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="approach.html">Approach</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="label">// the process</p>
-          <h2>From simulation to dataset</h2>
-        </div>
-        <ol class="steps">
-          <li><div><h3>Model realistic environments</h3><p>Simulated organizations with users, workstations, servers and the network activity that connects them.</p></div></li>
-          <li><div><h3>Generate everyday activity</h3><p>Simulated employees browse, email, write documents and log in, producing the background noise real defenders face every day.</p></div></li>
-          <li><div><h3>Emulate adversary behavior</h3><p>Known attack techniques, aligned with the MITRE ATT&amp;CK&reg; framework, are carried out in a controlled setting alongside normal activity.</p></div></li>
-          <li><div><h3>Capture what defenders see</h3><p>Logs, endpoint telemetry and detection alerts are collected the same way a security team would collect them.</p></div></li>
-          <li><div><h3>Label and package</h3><p>Every event is tied to ground truth (benign or malicious, and which technique) and delivered as a clean, privacy-safe dataset.</p></div></li>
-        </ol>
-      </div>
-    </section>
+  <main class="flex-grow-1">
+  <div class="px-4 pt-5 pb-4 my-4 text-center">
+    <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis mb-3 px-3 py-2">Approach</span>
+    <h1 class="display-5 fw-bold text-body-emphasis col-lg-9 mx-auto">How we create synthetic security data</h1>
+    <div class="col-lg-7 mx-auto">
+      <p class="lead text-body-secondary mb-0">We simulate realistic organizations end to end and record what their defenders would see. The result is data that looks and behaves like the real thing, with complete ground truth and no sensitive information.</p>
+    </div>
+  </div>
 
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="label">// why synthetic</p>
-          <h2>The advantages of simulated data</h2>
-        </div>
-        <div class="grid three">
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-          <h3>Privacy-safe</h3>
-          <p>No real people, credentials or networks are involved, so datasets can be shared without legal review.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div>
-          <h3>Fully labeled</h3>
-          <p>Because we control the scenario, we know exactly which events are malicious and why.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg></div>
-          <h3>Controllable and repeatable</h3>
-          <p>Scenarios can be adjusted and re-run, so datasets can be tailored and reproduced.</p>
-        </div>
+  <div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom fw-bold">From simulation to dataset</h2>
+    <div class="row g-5 py-5 row-cols-1 row-cols-md-2">
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">01</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Model realistic environments</h3>
+          <p class="text-body-secondary mb-0">Simulated organizations with users, workstations, servers and the network activity that connects them.</p>
         </div>
       </div>
-    </section>
-
-    <section class="cta">
-      <div class="container">
-        <h2>Interested in what we're building?</h2>
-        <p>We'd like to hear from researchers, security teams and investors who care about this problem.</p>
-        <div class="actions"><a class="btn primary" href="contact.html">Get in touch</a></div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">02</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Generate everyday activity</h3>
+          <p class="text-body-secondary mb-0">Simulated employees browse, email, write documents and log in, producing the background noise real defenders face every day.</p>
+        </div>
       </div>
-    </section>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">03</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Emulate adversary behavior</h3>
+          <p class="text-body-secondary mb-0">Known attack techniques, aligned with the MITRE ATT&amp;CK&reg; framework, are carried out in a controlled setting alongside normal activity.</p>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">04</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Capture what defenders see</h3>
+          <p class="text-body-secondary mb-0">Logs, endpoint telemetry and detection alerts are collected the same way a security team would collect them.</p>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">05</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Label and package</h3>
+          <p class="text-body-secondary mb-0">Every event is tied to ground truth (benign or malicious, and which technique) and delivered as a clean, privacy-safe dataset.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom fw-bold">The advantages of simulated data</h2>
+    <div class="row g-5 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-shield-lock"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Privacy-safe</h3>
+          <p class="text-body-secondary mb-0">No real people, credentials or networks are involved, so datasets can be shared without legal review.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-tags"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Fully labeled</h3>
+          <p class="text-body-secondary mb-0">Because we control the scenario, we know exactly which events are malicious and why.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-arrow-repeat"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Controllable and repeatable</h3>
+          <p class="text-body-secondary mb-0">Scenarios can be adjusted and re-run, so datasets can be tailored and reproduced.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="container px-4 my-5">
+    <div class="p-5 text-center bg-body-tertiary rounded-3 border">
+      <h2 class="fw-bold text-body-emphasis">Interested in what we're building?</h2>
+      <p class="col-lg-7 mx-auto lead text-body-secondary">We'd like to hear from researchers, security teams and investors who care about this problem.</p>
+      <a class="btn btn-primary btn-lg px-4" href="contact.html">Get in touch</a>
+    </div>
+  </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div>
-        <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
-        <p class="tag">Realistic synthetic data for cybersecurity.</p>
+  <div class="container px-4">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 my-4 border-top">
+      <div class="col-md-6 d-flex flex-wrap align-items-center gap-3">
+        <a href="index.html" class="wordmark fs-5" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+        <span class="text-body-secondary">&copy; 2026 shoo.ai &middot; Palo Alto, CA</span>
       </div>
-      <nav aria-label="Footer"><a href="index.html">Home</a><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
-      <div class="meta">
-        <p>Palo Alto, CA</p>
-        <p>&copy; 2026 shoo.ai</p>
-      </div>
-    </div>
-  </footer>
+      <ul class="nav col-md-6 justify-content-md-end mt-3 mt-md-0">
+      <li class="nav-item"><a href="index.html" class="nav-link px-2 text-body-secondary">Home</a></li>
+      <li class="nav-item"><a href="mission.html" class="nav-link px-2 text-body-secondary">Mission</a></li>
+      <li class="nav-item"><a href="approach.html" class="nav-link px-2 text-body-secondary">Approach</a></li>
+      <li class="nav-item"><a href="contact.html" class="nav-link px-2 text-body-secondary">Contact</a></li>
+      </ul>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

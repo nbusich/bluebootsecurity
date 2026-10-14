@@ -3,42 +3,51 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>shoo.ai</title>
+  <title>shoo.ai | Synthetic cybersecurity data</title>
   <meta name="description" content="shoo.ai creates realistic synthetic cybersecurity datasets to advance defensive AI, support security research, and evaluate SOC solutions.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="shoo.ai">
-  <meta property="og:title" content="shoo.ai">
+  <meta property="og:title" content="shoo.ai | Synthetic cybersecurity data">
   <meta property="og:description" content="shoo.ai creates realistic synthetic cybersecurity datasets to advance defensive AI, support security research, and evaluate SOC solutions.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+  <link rel="stylesheet" href="custom.css">
 </head>
-<body>
-  <header class="site-header">
-    <div class="container">
-      <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
-      <nav aria-label="Main"><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="mission.html">Mission</a></li>
+          <li class="nav-item"><a class="nav-link" href="approach.html">Approach</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <div class="hero">
-      <div class="container">
-        <div>
-          <p class="eyebrow">Now in development</p>
-          <h1>Realistic security data, <em>without the real-world risk.</em></h1>
-          <p class="lead">shoo.ai creates synthetic cybersecurity datasets: logs, telemetry and detections that look and behave like a real organization's, with none of the privacy constraints.</p>
-          <div class="actions">
-            <a class="btn primary" href="mission.html">Read our mission</a>
-            <a class="btn" href="approach.html">How it works</a>
-          </div>
+  <main class="flex-grow-1">
+  <div class="container col-xxl-10 px-4 py-5">
+    <div class="row align-items-center g-5 py-lg-5">
+      <div class="col-lg-6 order-lg-1">
+        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis mb-3 px-3 py-2">Now in development</span>
+        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Realistic security data, without the real-world risk.</h1>
+        <p class="lead text-body-secondary">shoo.ai creates synthetic cybersecurity datasets: logs, telemetry and detections that look and behave like a real organization's, with none of the privacy constraints.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+          <a href="mission.html" class="btn btn-primary btn-lg px-4 me-md-2">Read our mission</a>
+          <a href="approach.html" class="btn btn-outline-secondary btn-lg px-4">How it works</a>
         </div>
-        <div>
-          <div class="log-card">
-            <div class="bar"><i></i><i></i><i></i><span>synthetic-events.log</span></div>
-            <pre><span class="k">09:14:02</span>  fin-ws-014  outlook.exe          <span class="b">benign</span>
+      </div>
+      <div class="col-12 col-lg-6 order-lg-2">
+        <div class="card log-card border-0 shadow-lg">
+          <div class="card-header font-monospace small"><i class="bi bi-terminal me-2"></i>synthetic-events.log</div>
+          <pre class="card-body mb-0"><span class="k">09:14:02</span>  fin-ws-014  outlook.exe          <span class="b">benign</span>
 <span class="k">09:14:07</span>  fin-ws-014  chrome.exe           <span class="b">benign</span>
 <span class="k">09:15:31</span>  hr-ws-003   winword.exe          <span class="b">benign</span>
 <span class="k">09:16:48</span>  fin-ws-014  powershell.exe -enc  <span class="m">T1059.001</span>
@@ -46,102 +55,114 @@
 <span class="k">09:17:10</span>  dc-01       logon (type 3)       <span class="b">benign</span>
 <span class="k">09:17:12</span>  dc-01       kerberos tgs-req     <span class="m">T1558.003</span>
 <span class="k">09:18:05</span>  hr-ws-003   teams.exe            <span class="b">benign</span></pre>
-          </div>
-          <p class="log-caption">Illustrative example of synthetic events. Not real data.</p>
+        </div>
+        <p class="small text-body-secondary mt-2 mb-0">Illustrative example of synthetic events. Not real data.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom fw-bold">Security AI is only as good as its data</h2>
+    <p class="lead text-body-secondary col-lg-8 mb-0">Defenders increasingly rely on machine learning and AI agents to keep up with attackers. But realistic, high-quality security data is one of the hardest things to come by.</p>
+    <div class="row g-5 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-shield-lock"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Locked behind privacy</h3>
+          <p class="text-body-secondary mb-0">Real logs contain sensitive details about people, systems and networks, so organizations rarely share them.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-database"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Scarce public datasets</h3>
+          <p class="text-body-secondary mb-0">The open datasets that do exist are small, dated, or too clean to reflect how real environments behave.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-hourglass-split"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Costly to collect</h3>
+          <p class="text-body-secondary mb-0">Producing labeled data from real environments takes significant time from engineering, security and legal teams.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom fw-bold">What we build</h2>
+    <p class="lead text-body-secondary col-lg-8 mb-0">Synthetic data that behaves like the real thing: realistic, fully labeled cybersecurity datasets.</p>
+    <div class="row g-5 py-5 row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-shield-check"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Advance defensive AI</h3>
+          <p class="text-body-secondary mb-0">Training and testing data for models and agents that detect and respond to threats.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-journal-text"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Supply researchers</h3>
+          <p class="text-body-secondary mb-0">Realistic, shareable datasets for academic and industry security research.</p>
+        </div>
+        <div class="col">
+          <div class="feature-icon bg-primary-subtle text-primary-emphasis mb-3"><i class="bi bi-speedometer2"></i></div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Evaluate SOC solutions</h3>
+          <p class="text-body-secondary mb-0">A consistent, repeatable basis for understanding how security tools perform.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom fw-bold">Our goals</h2>
+    <div class="row g-5 py-5 row-cols-1 row-cols-md-2">
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">01</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Make realistic security data accessible</h3>
+          <p class="text-body-secondary mb-0">Give researchers and builders datasets they can actually use and share, without privacy trade-offs.</p>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">02</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Reflect real environments</h3>
+          <p class="text-body-secondary mb-0">Capture the noise, variety and everyday activity of real organizations, not just attacks in isolation.</p>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">03</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Label everything</h3>
+          <p class="text-body-secondary mb-0">Provide ground truth for every event, so data is useful for both training and measurement.</p>
+        </div>
+      </div>
+      <div class="col d-flex align-items-start">
+        <div class="step-num bg-primary-subtle text-primary-emphasis flex-shrink-0 me-3">04</div>
+        <div>
+          <h3 class="fs-5 fw-semibold text-body-emphasis">Build a common foundation</h3>
+          <p class="text-body-secondary mb-0">Give the security community a shared, transparent basis for building and measuring defenses.</p>
         </div>
       </div>
     </div>
+  </div>
 
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="label">// the problem</p>
-          <h2>Security AI is only as good as its data.</h2>
-          <p>Defenders increasingly rely on machine learning and AI agents to keep up with attackers. But realistic, high-quality security data is one of the hardest things to come by.</p>
-        </div>
-        <div class="grid three">
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-          <h3>Locked behind privacy</h3>
-          <p>Real logs contain sensitive details about people, systems and networks, so organizations rarely share them.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
-          <h3>Scarce public datasets</h3>
-          <p>The open datasets that do exist are small, dated, or too clean to reflect how real environments behave.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
-          <h3>Costly to collect</h3>
-          <p>Producing labeled data from real environments takes significant time from engineering, security and legal teams.</p>
-        </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="label">// what we build</p>
-          <h2>Synthetic data that behaves like the real thing.</h2>
-          <p>We generate realistic, fully labeled cybersecurity datasets for three purposes.</p>
-        </div>
-        <div class="grid three">
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
-          <h3>Advance defensive AI</h3>
-          <p>Training and testing data for models and agents that detect and respond to threats.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h14"/></svg></div>
-          <h3>Supply researchers</h3>
-          <p>Realistic, shareable datasets for academic and industry security research.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/></svg></div>
-          <h3>Evaluate SOC solutions</h3>
-          <p>A consistent, repeatable basis for understanding how security tools perform.</p>
-        </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="container">
-        <div class="section-head">
-          <p class="label">// goals</p>
-          <h2>What we're working toward</h2>
-        </div>
-        <ol class="steps">
-          <li><div><h3>Make realistic security data accessible</h3><p>Give researchers and builders datasets they can actually use and share, without privacy trade-offs.</p></div></li>
-          <li><div><h3>Reflect real environments</h3><p>Capture the noise, variety and everyday activity of real organizations, not just attacks in isolation.</p></div></li>
-          <li><div><h3>Label everything</h3><p>Provide ground truth for every event, so data is useful for both training and measurement.</p></div></li>
-          <li><div><h3>Build a common foundation</h3><p>Give the security community a shared, transparent basis for building and measuring defenses.</p></div></li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="cta">
-      <div class="container">
-        <h2>Interested in what we're building?</h2>
-        <p>We'd like to hear from researchers, security teams and investors who care about this problem.</p>
-        <div class="actions"><a class="btn primary" href="contact.html">Get in touch</a></div>
-      </div>
-    </section>
+  <div class="container px-4 my-5">
+    <div class="p-5 text-center bg-body-tertiary rounded-3 border">
+      <h2 class="fw-bold text-body-emphasis">Interested in what we're building?</h2>
+      <p class="col-lg-7 mx-auto lead text-body-secondary">We'd like to hear from researchers, security teams and investors who care about this problem.</p>
+      <a class="btn btn-primary btn-lg px-4" href="contact.html">Get in touch</a>
+    </div>
+  </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <div>
-        <a class="wordmark" href="index.html" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
-        <p class="tag">Realistic synthetic data for cybersecurity.</p>
+  <div class="container px-4">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-4 my-4 border-top">
+      <div class="col-md-6 d-flex flex-wrap align-items-center gap-3">
+        <a href="index.html" class="wordmark fs-5" aria-label="shoo.ai home">shoo<svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg><span>ai</span></a>
+        <span class="text-body-secondary">&copy; 2026 shoo.ai &middot; Palo Alto, CA</span>
       </div>
-      <nav aria-label="Footer"><a href="index.html">Home</a><a href="mission.html">Mission</a><a href="approach.html">Approach</a><a href="contact.html">Contact</a></nav>
-      <div class="meta">
-        <p>Palo Alto, CA</p>
-        <p>&copy; 2026 shoo.ai</p>
-      </div>
-    </div>
-  </footer>
+      <ul class="nav col-md-6 justify-content-md-end mt-3 mt-md-0">
+      <li class="nav-item"><a href="index.html" class="nav-link px-2 text-body-secondary">Home</a></li>
+      <li class="nav-item"><a href="mission.html" class="nav-link px-2 text-body-secondary">Mission</a></li>
+      <li class="nav-item"><a href="approach.html" class="nav-link px-2 text-body-secondary">Approach</a></li>
+      <li class="nav-item"><a href="contact.html" class="nav-link px-2 text-body-secondary">Contact</a></li>
+      </ul>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
