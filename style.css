@@ -1,8 +1,8 @@
 :root {
   --bg: #fafaf9;
-  --text: #1e293b;
+  --text: #0f172a;
   --muted: #64748b;
-  --accent: #0d9488;
+  --accent: #0f9f7f;
   --rule: #e2e8f0;
 }
 @media (prefers-color-scheme: dark) {
@@ -10,7 +10,7 @@
     --bg: #0f172a;
     --text: #e2e8f0;
     --muted: #94a3b8;
-    --accent: #2dd4bf;
+    --accent: #2bd4a7;
     --rule: #1e293b;
   }
 }
@@ -18,7 +18,7 @@
   --bg: #0f172a;
   --text: #e2e8f0;
   --muted: #94a3b8;
-  --accent: #2dd4bf;
+  --accent: #2bd4a7;
   --rule: #1e293b;
 }
 
@@ -43,20 +43,21 @@ main {
   padding: 18vh 16px 48px;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 32px;
-}
-.brand img { width: 40px; height: 40px; }
 .wordmark {
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0;
+  font-family: Menlo, "DejaVu Sans Mono", Consolas, monospace;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1;
+  margin: 0 0 40px;
 }
 .wordmark span { color: var(--accent); }
+.wordmark .shield {
+  width: 0.3em;
+  height: 0.36em;
+  margin: 0 0.06em 0 0.08em;
+  vertical-align: -0.02em;
+  fill: var(--accent);
+}
 
 .tagline {
   font-size: 1.5rem;
