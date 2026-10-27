@@ -283,7 +283,7 @@ section, header { scroll-margin-top: 4.5rem; }
 .demo-cta .head { color: #fff; }
 .demo-cta p { color: var(--panel-muted); max-width: 36em; }
 .demo-cta .demo-cta-note { font-size: .875rem; max-width: none; }
-.demo-chapters { list-style: none; counter-reset: chapter; display: grid; grid-template-columns: repeat(5, 1fr); gap: .5rem; margin: 2.25rem 0 0; padding: 0; }
+.demo-chapters { list-style: none; counter-reset: chapter; display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin: 2.25rem 0 0; padding: 0; }
 .demo-chapters li { counter-increment: chapter; display: flex; align-items: center; gap: .625rem; padding-top: .75rem; border-top: 2px solid var(--panel-line); font-size: .9375rem; color: var(--panel-muted); }
 .demo-chapters li::before {
   content: counter(chapter);

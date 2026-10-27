@@ -1,181 +1,311 @@
 (function () {
   'use strict';
+  const E = window.Evaluation;
   const $ = id => document.getElementById(id);
-  const replay = window.DemoReplay;
-  const data = window.DEMO_EVIDENCE;
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const clock = value => new Date(value).toISOString().slice(11, 19) + ' UTC';
-  const chapters = ['The company', 'The activity', 'The evidence', 'The answer key', 'The evaluation'];
-  const nextLabels = ['See the activity', 'See the evidence', 'Reveal what happened', 'Evaluate the response', 'Start again'];
-  const takeaways = [
-    'A useful test needs everyday business activity around the attacks.',
-    'Suspicious-looking activity can be ordinary work. Ordinary-looking activity can be part of an attack.',
-    'An event being visible in a security tool does not mean a SOC recognized the threat.',
-    'Known origin and verified outcomes create an answer key. Uncertainty stays visible.',
-    'Judge what the SOC understood and did against what actually happened.'
-  ];
-  const captions = [
-    '<strong>One company, two kinds of activity.</strong> Automated employees work while controlled attacks run alongside them.',
-    '<strong>Same workstation. Different intent.</strong> These two recorded actions happened during the same experiment.',
-    '<strong>The SOC’s view.</strong> Security evidence flows to the team under test. The evaluator’s labels stay separate.',
-    '<strong>The evaluator’s view.</strong> Compare observed evidence with the activity record, including execution outcomes.',
-    '<strong>Close the loop.</strong> Evaluate the SOC’s response against known activity using an agreed rubric.'
-  ];
-  const responses = {
-    careful: {
-      name: 'Uses context',
-      quote: 'Review the installer against approved work before escalating. The directory check on employee1 warrants process-lineage investigation. These records alone do not establish compromise; investigate before disruptive containment.',
-      rows: [
-        ['Threat recognition', 'Partial', 'neutral', 'Flags B for investigation; does not yet identify its attack origin.'],
-        ['Unnecessary escalation', 'Appropriate', 'good', 'Verifies A’s business purpose before escalation.'],
-        ['Investigation quality', 'Appropriate', 'good', 'Names the workstation and asks for process context.'],
-        ['Response quality', 'Appropriate', 'good', 'Recommends proportionate investigation, without claiming compromise.'],
-        ['Timeliness', 'Not measured', 'neutral', 'No real SOC submission or response clock in this replay.']
-      ]
-    },
-    overreacts: {
-      name: 'Overreacts',
-      quote: 'A downloaded script proves this employee is compromised. Isolate employee1 immediately. The directory check looks harmless and can be ignored.',
-      rows: [
-        ['Threat recognition', 'Missed context', 'bad', 'Dismisses the attack-origin directory check, B.'],
-        ['Unnecessary escalation', 'Unnecessary', 'bad', 'Treats authorized setup A as proven compromise.'],
-        ['Investigation quality', 'Unsupported', 'bad', 'The installer log alone does not establish compromise.'],
-        ['Response quality', 'Disproportionate', 'bad', 'Disruptive containment lacks sufficient supporting evidence.'],
-        ['Timeliness', 'Not measured', 'neutral', 'A quick but incorrect response is still incorrect.']
-      ]
-    },
-    misses: {
-      name: 'Dismisses both',
-      quote: 'These are routine developer commands. Close both items without further investigation.',
-      rows: [
-        ['Threat recognition', 'Missed context', 'bad', 'Closes attack-origin activity B without investigation.'],
-        ['Unnecessary escalation', 'None here', 'good', 'Does not escalate the authorized installer A.'],
-        ['Investigation quality', 'Insufficient', 'bad', 'Provides no supporting evidence or lineage review.'],
-        ['Response quality', 'Premature closure', 'bad', 'The available ambiguity calls for more context.'],
-        ['Timeliness', 'Not measured', 'neutral', 'A real evaluation needs recorded response timestamps.']
-      ]
-    }
+  const SVG = 'http://www.w3.org/2000/svg';
+  const DAY = E.DAY_END - E.DAY_START;
+  const RATE = DAY / 75; // simulated minutes per second at 1x: the workday plays in 75 s
+  const SIEM = { x: 650, y: 30, w: 92, h: 350 };
+  const pct = t => `${((t - E.DAY_START) / DAY) * 100}%`;
+  const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nodeById = Object.fromEntries(E.nodes.map(n => [n.id, n]));
+  // Label placement, chosen so no label sits on an edge or a ring.
+  const labelAt = { fw: { y: -26 }, core: { x: -26, y: 5, anchor: 'end' } };
+
+  const state = {
+    phase: 'setup', picked: new Set(E.defaultLineup), lineup: [], events: [], cursor: 0,
+    t: E.DAY_START, playing: false, speed: 1, focus: null, selected: null
   };
-  let state = replay.initial();
-  let selectedEvidence = 'installer';
-  let returnFocus = null;
   let idleAt = performance.now();
-  let lastTick = performance.now();
 
-  function badge(text, example = false) { return `<span class="provenance${example ? ' example' : ''}">${esc(text)}</span>`; }
-  function lead(number, title, intro) { return `<h1 id="scene-title">${title}</h1><p class="intro">${intro}</p>`; }
-  function evidenceCard(id, title, note) {
-    const record = data.records.find(r => r.id === id);
-    return `<button class="evidence-card" data-evidence="${id}" aria-haspopup="dialog"><span class="evidence-icon">${record.letter}</span><span><strong>${title}</strong><small>${note}</small></span></button>`;
+  /* ---------- Network ---------- */
+  const el = (tag, attrs = {}, parent) => {
+    const node = document.createElementNS(SVG, tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+    if (parent) parent.appendChild(node);
+    return node;
+  };
+  const edgeEls = {};
+  const nodeEls = {};
+  let siemCount, siemBars, particleLayer;
+  function drawNetwork() {
+    const svg = $('network');
+    const edgeLayer = el('g', { class: 'edges' }, svg);
+    E.edges.forEach(([a, b]) => {
+      edgeEls[[a, b].sort().join('|')] = el('line', { class: 'edge', x1: nodeById[a].x, y1: nodeById[a].y, x2: nodeById[b].x, y2: nodeById[b].y }, edgeLayer);
+    });
+    const siem = el('g', { class: 'siem' }, svg);
+    el('rect', { x: SIEM.x, y: SIEM.y, width: SIEM.w, height: SIEM.h, rx: 8 }, siem);
+    el('text', { x: SIEM.x + SIEM.w / 2, y: SIEM.y + 30, class: 'siem-title' }, siem).textContent = 'SIEM';
+    siemCount = el('text', { x: SIEM.x + SIEM.w / 2, y: SIEM.y + 78, class: 'siem-count' }, siem);
+    el('text', { x: SIEM.x + SIEM.w / 2, y: SIEM.y + 98, class: 'siem-unit' }, siem).textContent = 'logs';
+    siemBars = Array.from({ length: 12 }, (_, i) => el('rect', { x: SIEM.x + 12 + i * 5.8, width: 4, y: SIEM.y + SIEM.h - 24, height: 0, class: 'siem-bar' }, siem));
+    E.nodes.forEach(n => {
+      const g = el('g', { class: `node node-${n.kind}`, transform: `translate(${n.x} ${n.y})`, 'data-node': n.id }, svg);
+      if (n.kind !== 'cloud') { g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', `${n.label}: show logs`); }
+      el('circle', { r: 31, class: 'ring-focus' }, g);
+      el('circle', { r: 26, class: 'ring-attack' }, g);
+      if (n.kind === 'user') { el('rect', { x: -18, y: -14, width: 36, height: 24, rx: 3, class: 'shape' }, g); el('rect', { x: -23, y: 11, width: 46, height: 4, rx: 2, class: 'shape' }, g); }
+      else if (n.kind === 'server') { el('rect', { x: -15, y: -20, width: 30, height: 40, rx: 3, class: 'shape' }, g); el('line', { x1: -9, x2: 9, y1: -8, y2: -8, class: 'detail' }, g); el('line', { x1: -9, x2: 9, y1: 3, y2: 3, class: 'detail' }, g); }
+      else if (n.id === 'fw') { el('rect', { x: -19, y: -14, width: 38, height: 28, rx: 3, class: 'shape' }, g); el('line', { x1: -19, x2: 19, y1: 0, y2: 0, class: 'detail' }, g); el('line', { x1: -6, x2: -6, y1: -14, y2: 0, class: 'detail' }, g); el('line', { x1: 7, x2: 7, y1: 0, y2: 14, class: 'detail' }, g); }
+      else if (n.kind === 'net') el('circle', { r: 15, class: 'shape' }, g);
+      else el('circle', { r: 20, class: 'shape cloud' }, g);
+      el('path', { d: 'M0 0H12V7C12 10.6 9.4 13.2 6 14.4C2.6 13.2 0 10.6 0 7Z', class: 'shield', transform: 'translate(15 -33)' }, g);
+      const at = labelAt[n.id] || { y: n.kind === 'cloud' ? 38 : 46 };
+      el('text', { x: at.x || 0, y: at.y, class: 'node-label', 'text-anchor': at.anchor || 'middle' }, g).textContent = n.label;
+      nodeEls[n.id] = g;
+    });
+    particleLayer = el('g', { class: 'particles' }, svg);
   }
-  function sceneHTML() {
-    switch (state.step) {
-      case 0: return lead(1, 'A company.<br>A working day.<br><em>A controlled attack.</em>', 'Step inside a virtual business where employees work, systems generate evidence, and attackers operate in the background.') +
-        '<div class="feature-list"><div class="feature-row"><strong>Make everyday work feel real</strong><p>People write code, open documents and use business services.</p></div><div class="feature-row"><strong>Introduce known attack activity</strong><p>Run controlled scenarios while ordinary work continues.</p></div><div class="feature-row"><strong>Keep a record of what happened</strong><p>Record actions and outcomes independently of the SOC.</p></div></div>';
-      case 1: return lead(2, 'Which one would<br><em>you investigate?</em>', 'Two activities. One workstation. The commands are real excerpts from the same recorded experiment. Their intent is hidden for now.') +
-        `<div class="activity-pair"><article class="activity-card"><span class="case-letter">Activity A</span>${badge('Recorded excerpt')}<h2>A script is downloaded and run</h2><p>An online script sets up a developer tool.</p><pre class="command">curl …/install.sh | bash</pre><span class="case-time">20:41:23 UTC</span></article><article class="activity-card"><span class="case-letter">Activity B</span>${badge('Recorded excerpt')}<h2>A directory is checked</h2><p>A shell asks where it is running.</p><pre class="command">sh -c pwd</pre><span class="case-time">20:37:36 UTC</span></article></div><p class="small-note">Excerpts are grouped for comparison, not played in chronological order. The installer command is abbreviated here.</p><p class="question">What deserves a closer look?</p><div class="choices" role="group" aria-label="Choose what to investigate">${[['a', 'Activity A'], ['b', 'Activity B'], ['both', 'Both'], ['more', 'Need more evidence']].map(([v, label]) => `<button class="choice" data-choice="${v}" aria-pressed="${state.choice === v}">${label}</button>`).join('')}</div><p class="choice-note">${state.choice ? 'Choice saved for this replay. This is about context, not guessing the right command.' : 'There is no penalty for asking for more evidence.'}</p>`;
-      case 2: return lead(3, 'What does the<br><em>defender see?</em>', 'Sensors record activity. A security platform collects the logs and alerts. The SOC uses that evidence to investigate.') +
-        `<div class="evidence-list">${evidenceCard('installer', 'An installer download', 'A process record shows the download tool and script address.')}${evidenceCard('discovery', 'A shell checks its location', 'A process record shows a shell running a directory command.')}${evidenceCard('identity', 'A user identity check', 'Another record shows a command asking “who am I?”')}</div><p class="small-note">${badge('Recorded lab evidence')} Open a card to inspect its timestamp, command and process details.</p><div class="access-divider"><strong>What the SOC under test receives</strong>For a real evaluation: agreed platform access or a supported integration. The private activity labels and scenario markers are excluded.</div>`;
-      case 3: return lead(4, 'Now reveal<br><em>what happened.</em>', 'The independent activity record tells us who initiated each action. Execution results tell us what actually ran.') +
-        `<div class="truth-list"><div class="truth-card"><strong>A: Authorized employee activity</strong><p>The engineer’s automation ran a developer-tool installer. Recorded output reports an existing installation being updated.</p><button class="text-button" data-evidence="installer">Inspect the supporting records</button></div><div class="truth-card attack"><strong>B: Attack-origin discovery</strong><p>The attack simulation ran the directory check. A completed result returned <code>/opt</code>. This confirms the command ran, not that a breach occurred.</p><button class="text-button" data-evidence="discovery">Inspect the supporting records</button></div></div><p class="prediction">${state.choice ? `You chose: ${esc({ a: 'Activity A', b: 'Activity B', both: 'Both', more: 'Need more evidence' }[state.choice])}. Asking for context is part of good investigation.` : 'Same command, different context. Knowing the origin changes the interpretation.'}</p><div class="access-divider"><strong>Uncertainty stays in the dataset</strong>Log-to-action associations are candidates, not proof of unique causation. Another attack step lacks a completion result and is excluded from executed-activity outcomes.</div>`;
-      case 4: {
-        const response = responses[state.response];
-        return lead(5, 'Did the SOC<br><em>understand it?</em>', 'Compare a response with the known activity. Catching threats matters. So does avoiding unnecessary disruption.') +
-          `${badge('Illustrative SOC response', true)}<div class="response-select" role="group" aria-label="Choose an illustrative SOC response">${Object.entries(responses).map(([id, r]) => `<button class="choice" data-response="${id}" aria-pressed="${state.response === id}">${r.name}</button>`).join('')}</div><div class="soc-response"><blockquote>“${esc(response.quote)}”</blockquote></div><table class="scorecard"><caption class="sr-only">Illustrative assessment of the selected example SOC response</caption><tbody>${response.rows.map(([dimension, status, tone, explanation]) => `<tr><th scope="row">${dimension}</th><td><span class="verdict ${tone}">${status}</span> ${explanation}</td></tr>`).join('')}</tbody></table><p class="small-note">Example assessments explain the rubric. They are not measured results or a provider ranking. Without enough SOC-visible context, “investigate” can be the appropriate response.</p>`;
-      }
+
+  /* ---------- Particles: one capped, reused pool ---------- */
+  const pool = [];
+  function initParticles() {
+    for (let i = 0; i < 90; i++) pool.push({ el: el('circle', { r: 2, class: 'particle', opacity: 0 }, particleLayer), live: false });
+  }
+  let siemSlot = 0;
+  function spawn(node, attack) {
+    if (reducedMotion() || document.hidden) return;
+    const p = pool.find(q => !q.live);
+    if (!p) return;
+    const from = nodeById[node];
+    siemSlot = (siemSlot + 1) % 9;
+    Object.assign(p, { live: true, x0: from.x, y0: from.y, x1: SIEM.x + 2, y1: SIEM.y + 125 + siemSlot * 22, born: performance.now(), life: attack ? 1300 : 950 });
+    p.el.setAttribute('r', attack ? 4.5 : 2.2);
+    p.el.setAttribute('class', `particle${attack ? ' attack' : ''}`);
+  }
+  function stepParticles(now) {
+    for (const p of pool) {
+      if (!p.live) continue;
+      const k = (now - p.born) / p.life;
+      if (k >= 1) { p.live = false; p.el.setAttribute('opacity', 0); continue; }
+      const e = 1 - Math.pow(1 - k, 2);
+      p.el.setAttribute('cx', p.x0 + (p.x1 - p.x0) * e);
+      p.el.setAttribute('cy', p.y0 + (p.y1 - p.y0) * e);
+      p.el.setAttribute('opacity', k < .1 ? k * 10 : k > .85 ? (1 - k) / .15 : 1);
     }
   }
+  function clearParticles() { pool.forEach(p => { p.live = false; p.el.setAttribute('opacity', 0); }); }
 
-  function render(focus = false) {
-    $('chapters').innerHTML = chapters.map((name, index) => `<button class="chapter${index === state.step ? ' active' : index < state.step ? ' complete' : ''}" data-step="${index}"${index === state.step ? ' aria-current="step"' : ''}><span class="chapter-index">${index + 1}</span>${name}</button>`).join('');
-    $('scene').innerHTML = sceneHTML();
-    $('scene').classList.remove('scene-enter');
-    void $('scene').offsetWidth;
-    $('scene').classList.add('scene-enter');
-    $('takeaway').textContent = takeaways[state.step];
-    $('map-caption').innerHTML = captions[state.step];
-    $('previous').disabled = state.step === 0;
-    $('next').textContent = nextLabels[state.step];
-    $('sensor-node').classList.toggle('highlight', state.step === 2);
-    $('soc-node').classList.toggle('highlight', state.step === 2 || state.step === 4);
-    $('judge-node').classList.toggle('highlight', state.step >= 3);
-    renderTransport();
-    if (focus) { $('scene').focus({ preventScroll: true }); $('announcement').textContent = `Chapter ${state.step + 1}: ${chapters[state.step]}`; }
+  /* ---------- Everything shown is derived from the events up to state.t ---------- */
+  const seen = () => state.events.slice(0, state.cursor);
+  function renderNetwork() {
+    const past = seen();
+    const compromised = new Set();
+    const attackEdges = new Set();
+    for (const e of past) {
+      if (e.type !== 'attack') continue;
+      const step = E.steps[e.step];
+      compromised.add(step.node);
+      (step.compromises || []).forEach(n => compromised.add(n));
+      const path = step.path || [];
+      for (let i = 1; i < path.length; i++) attackEdges.add([path[i - 1], path[i]].sort().join('|'));
+    }
+    const caught = new Set();
+    const responded = new Set();
+    if (state.focus) for (const e of past) {
+      if (e.soc !== state.focus) continue;
+      if (e.type === 'detect') caught.add(e.node);
+      if (e.type === 'respond') responded.add(e.node);
+    }
+    for (const [id, g] of Object.entries(nodeEls)) {
+      g.classList.toggle('is-compromised', compromised.has(id));
+      g.classList.toggle('is-caught', caught.has(id));
+      g.classList.toggle('is-responded', responded.has(id));
+      g.classList.toggle('is-selected', state.selected === id);
+    }
+    for (const [key, line] of Object.entries(edgeEls)) line.classList.toggle('is-attack', attackEdges.has(key));
+    const logs = past.filter(e => e.type === 'log' || e.type === 'attack');
+    siemCount.textContent = logs.length.toLocaleString('en-US');
+    siemBars.forEach((bar, i) => {
+      const from = state.t - (12 - i) * 10;
+      const count = logs.filter(e => e.t > from && e.t <= from + 10).length;
+      const h = Math.min(56, count * 2);
+      bar.setAttribute('height', h);
+      bar.setAttribute('y', SIEM.y + SIEM.h - 18 - h);
+    });
+    renderInspector(past);
   }
-  function renderTransport() {
+  function renderInspector(past) {
+    const box = $('inspector');
+    if (!state.selected) { box.innerHTML = '<span class="inspector-hint">Select a device to see its logs</span>'; return; }
+    const node = nodeById[state.selected];
+    const lines = past.filter(e => e.node === state.selected && (e.type === 'log' || e.type === 'attack')).slice(-3).reverse();
+    box.innerHTML = `<strong>${esc(node.label)}</strong><ol class="log-lines">${lines.length ? lines.map(e => `<li class="${e.type === 'attack' ? 'is-attack' : ''}"><time>${E.clock(e.t)}</time> ${esc(e.text)}</li>`).join('') : '<li class="is-empty">No logs yet</li>'}</ol>`;
+  }
+
+  /* ---------- SOC lanes ---------- */
+  function buildLanes() {
+    $('lane-list').innerHTML = state.lineup.map(id => {
+      const soc = E.socs.find(s => s.id === id);
+      return `<button class="lane" data-soc="${id}" aria-pressed="false" aria-label="${soc.name}, ${soc.type}: show on the network"><span class="lane-head"><strong>${soc.name}</strong><span>${soc.type}</span><span class="tally" data-tally="${id}"></span></span><span class="lane-track" data-track="${id}"></span></button>`;
+    }).join('');
+  }
+  function renderLanes() {
+    const past = seen();
+    const ticks = E.steps.filter(s => s.t <= state.t).map(s => `<span class="tick" style="left:${pct(s.t)}"></span>`).join('');
+    $('lane-overlay').innerHTML = `${ticks}<span class="playhead" style="left:${pct(state.t)}"></span>`;
+    for (const id of state.lineup) {
+      const mine = past.filter(e => e.soc === id);
+      $('lane-list').querySelector(`[data-track="${id}"]`).innerHTML = mine.map(e => {
+        if (e.type === 'detect') { const from = e.t - e.delay; return `<span class="m-bar m-bar-detect" style="left:${pct(from)};width:calc(${pct(e.t)} - ${pct(from)})"></span><span class="m m-detect" style="left:${pct(e.t)}"></span>`; }
+        if (e.type === 'respond') { const from = e.t - e.delay; return `<span class="m-bar m-bar-respond" style="left:${pct(from)};width:calc(${pct(e.t)} - ${pct(from)})"></span><span class="m m-respond" style="left:${pct(e.t)}"></span>`; }
+        if (e.type === 'miss') return `<span class="m m-miss" style="left:${pct(E.steps[e.step].t)}"></span>`;
+        if (e.type === 'false_alarm') return `<span class="m m-fa" style="left:${pct(e.t)}"></span>`;
+        return '';
+      }).join('');
+      const n = type => mine.filter(e => e.type === type).length;
+      $('lane-list').querySelector(`[data-tally="${id}"]`).innerHTML = `<span><i class="g g-detect"></i>${n('detect')}</span><span><i class="g g-miss"></i>${n('miss')}</span><span><i class="g g-fa"></i>${n('false_alarm')}</span>`;
+    }
+    $('lane-list').querySelectorAll('.lane').forEach(lane => lane.setAttribute('aria-pressed', String(lane.dataset.soc === state.focus)));
+  }
+
+  /* ---------- Clock and controls ---------- */
+  function renderTime() {
+    $('clock').textContent = E.clock(state.t);
+    $('track-fill').style.width = pct(state.t);
+  }
+  function renderControls() {
+    const running = state.phase === 'run';
+    $('console').dataset.phase = state.phase;
+    $('play').disabled = !running;
+    $('skip').disabled = !running;
+    document.querySelectorAll('[data-speed]').forEach(b => { b.disabled = !running; b.setAttribute('aria-pressed', String(Number(b.dataset.speed) === state.speed)); });
     $('play-icon').textContent = state.playing ? 'Ⅱ' : '▶';
-    $('play').setAttribute('aria-label', state.playing ? 'Pause automatic replay' : 'Start automatic replay');
-    $('play-label').textContent = state.playing ? 'Automatic replay, loops every 2 minutes' : 'Take it at your pace';
-    $('play-detail').textContent = state.playing ? `Chapter ${state.step + 1} of 5, sped up for presentation` : 'Or play a two-minute loop';
-    $('progress-fill').style.width = `${replay.progress(state) * 100}%`;
+    $('play').setAttribute('aria-label', state.playing ? 'Pause' : 'Play');
+    $('setup').hidden = state.phase !== 'setup';
+    $('lanes').hidden = state.phase === 'setup';
+    $('report').hidden = state.phase !== 'report';
+    document.querySelectorAll('.phases li').forEach(li => li.classList.toggle('is-current', li.dataset.phase === state.phase));
   }
-  function dispatch(event, focus = false) {
-    const previous = state;
-    if (event.type === 'reset') selectedEvidence = 'installer';
-    state = replay.reduce(state, event);
-    if (previous.step !== state.step || previous.choice !== state.choice || previous.response !== state.response || event.type === 'reset') render(focus);
-    else renderTransport();
+  function renderPicks() {
+    $('soc-picks').innerHTML = E.socs.map(s => `<button class="soc-pick" data-pick="${s.id}" aria-pressed="${state.picked.has(s.id)}"><strong>${s.name}</strong><span>${s.type}</span></button>`).join('');
+    $('start').disabled = state.picked.size < 2;
   }
-  function navigate(step) { dispatch({ type: 'pause' }); dispatch({ type: 'goto', step }, true); }
-  function openEvidence(id, trigger) {
-    dispatch({ type: 'pause' });
-    selectedEvidence = id || selectedEvidence;
-    returnFocus = trigger;
-    renderEvidence();
-    if (!$('evidence-dialog').open) $('evidence-dialog').showModal();
-  }
-  function renderEvidence() {
-    $('evidence-tabs').innerHTML = data.records.map(r => `<button class="choice" data-record="${r.id}" aria-pressed="${r.id === selectedEvidence}">Record ${r.letter}${state.step >= 3 ? `: ${r.id === 'discovery' ? 'Attack origin' : 'Authorized'}` : ''}</button>`).join('');
-    const r = data.records.find(record => record.id === selectedEvidence);
-    const visibleLog = { timestamp: r.log.time, workstation: r.machine, rule: r.log.rule, rule_level: r.log.level, executable: r.log.exe, arguments: r.log.arguments, process_id: r.log.pid, parent_process_id: r.log.ppid };
-    $('evidence-detail').innerHTML = `<div class="detail-heading"><h3>Record ${r.letter}: ${state.step >= 3 ? esc(r.title) : { installer: 'Script download', discovery: 'Directory check', identity: 'Identity check' }[r.id]}</h3>${badge('Recorded lab evidence')}</div><div class="record-meta"><span>9 Oct 2026</span><span>${clock(r.log.time)}</span><span>Host ${esc(r.machine)}</span></div><p class="detail-note">${esc(r.log.description)} This is a generic command-execution alert; its existence does not establish malicious intent.</p><div class="code-label">Security-platform record, selected fields</div><pre class="record-code">${esc(JSON.stringify(visibleLog, null, 2))}</pre><p class="provenance-line">Source: ${esc(r.log.source)}<br>Record: ${esc(r.log.ref)}</p>${state.step >= 3 ? `<div class="evaluator-block"><h4>Evaluator-only answer key</h4><p><strong>Origin:</strong> ${esc(r.action.origin)}</p><p><strong>Label:</strong> ${esc(r.action.label)}</p><p><strong>Action recorded:</strong> ${clock(r.action.time)}${r.action.finished ? `. <strong>Finished:</strong> ${clock(r.action.finished)}` : ''}</p><div class="code-label">Action command, scenario marker removed</div><pre class="record-code">${esc(r.action.command)}</pre><div class="code-label">Recorded output excerpt</div><pre class="record-code">${esc(r.action.output)}</pre><p>${esc(r.action.outcome)}</p><p><strong>Association:</strong> ${esc(r.association)}</p><p class="provenance-line">Source: ${esc(r.action.source)}<br>Action: ${esc(r.action.ref)}</p></div><div class="access-divider"><strong>Example of an excluded outcome</strong>${esc(data.exclusion.reason)}</div>` : '<div class="evaluator-locked">The evaluator’s origin labels and execution results are withheld in this view. Continue to chapter 4 to reveal the answer key.</div>'}<p class="small-note">The source experiment contains ${data.counts.actions} recorded actions and ${data.counts.logs} security alerts from ${data.counts.workstations} workstation. The fictional company’s scale is not a measured lab result.</p>`;
+  function drawTrackTicks() {
+    E.steps.forEach(s => { const tick = document.createElement('span'); tick.className = 'track-tick'; tick.style.left = pct(s.t); $('track').appendChild(tick); });
   }
 
-  document.querySelectorAll('.endpoint-dots').forEach(el => { el.innerHTML = '<i></i>'.repeat(15); });
-  $('next').addEventListener('click', () => state.step === 4 ? dispatch({ type: 'reset' }, true) : navigate(state.step + 1));
-  $('previous').addEventListener('click', () => navigate(state.step - 1));
-  $('restart').addEventListener('click', () => { if ($('evidence-dialog').open) $('evidence-dialog').close(); dispatch({ type: 'reset' }, true); });
-  $('play').addEventListener('click', () => { lastTick = performance.now(); dispatch({ type: 'toggle' }); });
-  $('lab-button').addEventListener('click', event => openEvidence(null, event.currentTarget));
-  $('close-dialog').addEventListener('click', () => $('evidence-dialog').close());
-  $('evidence-dialog').addEventListener('close', () => { idleAt = performance.now(); returnFocus?.focus(); });
+  /* ---------- Phases ---------- */
+  function reset() {
+    state.t = E.DAY_START; state.cursor = 0; state.focus = null; state.playing = false;
+    clearParticles();
+  }
+  function start(lineup) {
+    state.lineup = E.socs.map(s => s.id).filter(id => lineup.includes(id));
+    state.events = E.compileTimeline(state.lineup);
+    reset();
+    state.phase = 'run'; state.playing = true;
+    buildLanes();
+    renderAll();
+    $('console').focus({ preventScroll: true });
+    $('announcement').textContent = `Workday started with ${state.lineup.length} SOCs.`;
+  }
+  function advance(nt, animate = true) {
+    while (state.cursor < state.events.length && state.events[state.cursor].t <= nt) {
+      const e = state.events[state.cursor++];
+      if (animate && (e.type === 'log' || e.type === 'attack')) spawn(e.node, e.type === 'attack');
+      if (animate && e.type === 'attack') $('announcement').textContent = `${E.clock(e.t)}: ${E.steps[e.step].name}`;
+    }
+    state.t = nt;
+  }
+  function finish() {
+    advance(E.DAY_END, false);
+    state.phase = 'report'; state.playing = false;
+    renderReport();
+    renderAll();
+    $('report-title').focus({ preventScroll: true });
+    if (matchMedia('(max-width: 900px)').matches) $('report').scrollIntoView({ block: 'start', behavior: reducedMotion() ? 'auto' : 'smooth' });
+  }
+  function renderReport() {
+    const rows = E.report(state.lineup, state.events);
+    const min = key => Math.min(...rows.map(r => r[key] ?? Infinity));
+    const best = { detected: Math.max(...rows.map(r => r.detected)), falseAlarms: min('falseAlarms'), mttd: min('mttd'), maxTtd: min('maxTtd'), mttr: min('mttr'), overall: rows[0].overall };
+    const cell = (label, text, isBest) => `<td data-label="${label}"${isBest ? ' class="is-best"' : ''}>${text}</td>`;
+    $('report-body').innerHTML = rows.map((r, i) => {
+      const soc = E.socs.find(s => s.id === r.id);
+      return `<tr${i === 0 ? ' class="is-winner"' : ''}>`
+        + `<th scope="row"><span class="rank">${i + 1}</span><span><strong>${soc.name}</strong><small>${soc.type}</small></span></th>`
+        + cell('Attacks detected', `${r.detected} of ${r.total}`, r.detected === best.detected)
+        + cell('False alarms', r.falseAlarms, r.falseAlarms === best.falseAlarms)
+        + cell('Mean time to detect', E.duration(r.mttd), r.mttd === best.mttd)
+        + cell('Max time to detect', E.duration(r.maxTtd), r.maxTtd === best.maxTtd)
+        + cell('Mean time to respond', E.duration(r.mttr), r.mttr === best.mttr)
+        + cell('Contained before data left', r.contained ? '<span class="yes">Yes</span>' : '<span class="no">No</span>', r.contained)
+        + cell('Overall', `<span class="overall"><span class="overall-bar"><i style="width:${r.overall}%"></i></span>${r.overall}</span>`, r.overall === best.overall)
+        + '</tr>';
+    }).join('');
+  }
+  function renderAll() { renderControls(); renderTime(); renderNetwork(); if (state.phase !== 'setup') renderLanes(); }
+
+  /* ---------- Main loop ---------- */
+  let last = performance.now();
+  let lastCursor = -1;
+  function frame(now) {
+    const dt = Math.min(now - last, 100) / 1000;
+    last = now;
+    if (state.phase === 'run' && state.playing) {
+      const nt = Math.min(E.DAY_END, state.t + dt * RATE * state.speed);
+      advance(nt);
+      renderTime();
+      if (state.cursor !== lastCursor) { lastCursor = state.cursor; renderNetwork(); renderLanes(); }
+      else $('lane-overlay').querySelector('.playhead')?.style.setProperty('left', pct(state.t));
+      if (nt >= E.DAY_END) finish();
+    }
+    stepParticles(now);
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- Input ---------- */
+  document.addEventListener('click', event => {
+    const pick = event.target.closest('[data-pick]');
+    if (pick) {
+      const id = pick.dataset.pick;
+      if (state.picked.has(id)) state.picked.delete(id); else state.picked.add(id);
+      renderPicks();
+      document.querySelector(`[data-pick="${id}"]`).focus({ preventScroll: true });
+      return;
+    }
+    const lane = event.target.closest('[data-soc]');
+    if (lane) { state.focus = state.focus === lane.dataset.soc ? null : lane.dataset.soc; renderNetwork(); renderLanes(); return; }
+    const node = event.target.closest('[data-node]');
+    if (node && node.getAttribute('role') === 'button') { state.selected = state.selected === node.dataset.node ? null : node.dataset.node; renderNetwork(); return; }
+    const speed = event.target.closest('[data-speed]');
+    if (speed) { state.speed = Number(speed.dataset.speed); renderControls(); }
+  });
+  $('start').addEventListener('click', () => start([...state.picked]));
+  $('play').addEventListener('click', () => { state.playing = !state.playing; renderControls(); });
+  $('skip').addEventListener('click', finish);
+  $('swap').addEventListener('click', () => { reset(); state.phase = 'setup'; renderPicks(); renderAll(); $('start').focus({ preventScroll: true }); });
+  $('again').addEventListener('click', () => start(state.lineup));
   $('fullscreen').addEventListener('click', async () => {
     try {
       if (document.fullscreenElement) await document.exitFullscreen();
-      else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
-      else $('announcement').textContent = 'Use your browser’s fullscreen command for presentation mode.';
-    } catch { $('announcement').textContent = 'Fullscreen is unavailable. The demo still works in this window.'; }
+      else await document.documentElement.requestFullscreen();
+    } catch { $('announcement').textContent = 'Fullscreen is unavailable in this browser.'; }
   });
-  document.addEventListener('fullscreenchange', () => {
-    $('fullscreen').setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
-  });
-  document.addEventListener('click', event => {
-    const el = event.target.closest('button');
-    if (!el) return;
-    if (el.dataset.step !== undefined) navigate(Number(el.dataset.step));
-    if (el.dataset.choice) { const value = el.dataset.choice; dispatch({ type: 'choice', value }); document.querySelector(`[data-choice="${value}"]`).focus({ preventScroll: true }); $('announcement').textContent = 'Choice saved. Continue to explore the evidence.'; }
-    if (el.dataset.response) { const value = el.dataset.response; dispatch({ type: 'response', value }); document.querySelector(`[data-response="${value}"]`).focus({ preventScroll: true }); }
-    if (el.dataset.evidence) openEvidence(el.dataset.evidence, el);
-    if (el.dataset.record) { selectedEvidence = el.dataset.record; renderEvidence(); $('evidence-tabs').querySelector(`[data-record="${selectedEvidence}"]`).focus(); }
-  });
+  document.addEventListener('fullscreenchange', () => $('fullscreen').setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen'));
   document.addEventListener('keydown', event => {
-    if ($('evidence-dialog').open || /INPUT|TEXTAREA|SELECT/.test(event.target.tagName) || event.altKey || event.ctrlKey || event.metaKey) return;
-    if (event.key === 'ArrowRight') { event.preventDefault(); if (state.step < 4) navigate(state.step + 1); }
-    if (event.key === 'ArrowLeft') { event.preventDefault(); navigate(state.step - 1); }
+    const node = event.target.closest?.('[data-node]');
+    if (node && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); node.dispatchEvent(new MouseEvent('click', { bubbles: true })); return; }
+    if (event.key === 'Escape' && state.selected) { state.selected = null; renderNetwork(); }
+    if (event.key === ' ' && state.phase === 'run' && !/BUTTON|INPUT|SELECT|TEXTAREA/.test(event.target.tagName)) { event.preventDefault(); state.playing = !state.playing; renderControls(); }
   });
   ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(name => document.addEventListener(name, () => { idleAt = performance.now(); }, { passive: true }));
-  document.addEventListener('visibilitychange', () => { lastTick = performance.now(); idleAt = lastTick; if (document.hidden) dispatch({ type: 'pause' }); });
-  // After 90 seconds without input, start an attract loop. Dialogs and focused
-  // controls remain stable, and reduced-motion users opt into playback explicitly.
+  document.addEventListener('visibilitychange', () => { if (document.hidden && state.playing) { state.playing = false; renderControls(); } });
+  // Booth attract loop: after 90 s without input on setup or the report, run the day again.
   setInterval(() => {
-    const now = performance.now();
-    const ms = Math.min(now - lastTick, 1500);
-    lastTick = now;
-    if (document.hidden || $('evidence-dialog').open) return;
-    if (!state.playing && now - idleAt > 90000 && !matchMedia('(prefers-reduced-motion: reduce)').matches && !document.querySelector(':focus-visible')) {
-      dispatch({ type: 'reset' }); dispatch({ type: 'toggle' });
-    }
-    dispatch({ type: 'tick', ms });
-  }, 250);
-  render();
+    if (state.phase === 'run' || reducedMotion() || document.hidden || document.querySelector(':focus-visible')) return;
+    if (performance.now() - idleAt < 90000) return;
+    idleAt = performance.now();
+    start(state.phase === 'report' ? state.lineup : (state.picked.size >= 2 ? [...state.picked] : E.defaultLineup));
+  }, 1000);
+
+  drawNetwork();
+  initParticles();
+  drawTrackTicks();
+  renderPicks();
+  renderAll();
+  requestAnimationFrame(frame);
 })();

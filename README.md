@@ -11,87 +11,21 @@ Static site for BlueBoot Security (independent SOC evaluation, plus labeled secu
 
 ## Interactive event demo
 
-Open `demo/index.html` directly in a modern browser, or serve the site locally:
+`demo/` is an evaluation console: the visitor runs a BlueBoot evaluation as a CISO watching the operation.
 
-```sh
-python3 -m http.server 8000 --bind 127.0.0.1
-```
+1. **Pick SOCs:** choose two to four of four simulated SOCs (an agentic SOC, two MDRs, an in-house SOC).
+2. **Run the workday:** a fictional bank's network (nodes and edges) runs 09:00 to 17:00 in about 75 seconds. Normal logs (slate) and an eight-step Carbanak-style attack (orange) flow into the SIEM, and each SOC's lane shows when it detected and responded, what it missed, and its false alarms. Click a device to see its latest logs; click a SOC lane to see what it caught on the network. 1×/4×, pause (also Space) and Skip to report are available.
+3. **Report:** a ranked scorecard of attacks detected, false alarms, mean and max time to detect, mean time to respond, whether the SOC contained the attack before data left, and an overall score. Swap SOCs to compare another lineup against the same attack.
 
-Visit `http://127.0.0.1:8000/demo/`. The demo has no dependencies, external fonts,
-CDN requests, build step, backend, or live lab connection. The existing homepage
-continues to use its Bootstrap CDN assets. GitHub Pages serves the demo at `/demo/`
-when these files are committed and deployed through the site's normal workflow.
+Open `demo/index.html` directly, or serve the site (`python3 -m http.server 8000 --bind 127.0.0.1`) and visit `/demo/`. It has no dependencies, build step or network requests; fonts come from `fonts/`. After 90 seconds idle on the setup or report screen it runs the day again (not under reduced motion). Fullscreen is in the control bar.
 
-- Five chapters: company, activity, evidence, answer key, evaluation.
-- Next/Back and chapter buttons support a presenter; arrow keys also navigate.
-- Play starts a two-minute loop; Pause, Restart and fullscreen support booth use.
-- Choosing an activity, opening evidence or selecting a response pauses playback.
-- After 90 seconds without interaction, an attract loop starts unless a dialog is
-  open, a control has visible keyboard focus, or reduced motion is preferred.
-- The page pauses when the browser tab is hidden. Restart clears the choice,
-  selected response, chapter and playback state.
-- Try the context-aware, overreacting and dismissive example responses in chapter 5.
-
-### Evidence and presentation boundaries
-
-The company (240 employees, three offices), the employee persona and company diagram
-are illustrative. The bundled excerpts come from **one workstation** in experiment
-`20261009-203708-example` in the sibling `shoepoc` repository. Three selected
-security records retain their timestamps, record references and field-limited
-process details. The answer key includes the origin and available execution
-results. Action-to-log links remain candidate associations; timestamps alone do
-not establish unique causality. An unconfirmed attack step is explicitly excluded
-from executed-activity outcomes.
-
-The installer and directory-check excerpts are grouped for comparison, not shown
-in chronological order. Playback is an accelerated explanation, not a real-time
-experiment clock. All evidence timestamps are UTC. A shortened command in the
-activity scene is identified as abbreviated; the explorer shows its full selected
-command. Evaluator scenario markers and cumulative employee output are omitted
-from the exported excerpts. No passwords, API keys or raw exports are bundled.
-
-Origin labels are hidden in the UI until chapter 4. This is a **presentation
-boundary**, not secure authorization: the browser receives the complete fixture.
-A real SOC evaluation must provide a separate, appropriately filtered feed or
-platform account, excluding evaluator-only labels and scenario markers.
-
-The responses and scorecards are illustrative, not measured SOC performance.
-Timing is not measured. No separate XDR integration is demonstrated. There was no
-lab video in the source repository; the evidence explorer provides real-record
-inspection instead of fabricated footage. Optional booth footage can be recorded
-separately, with credentials and evaluator markers kept out of the SOC view.
-
-### Verify or refresh the evidence
-
-From this repository's root (requires the sibling lab repository):
-
-```sh
-python3 demo/tools/build_evidence.py --source ../shoepoc --check
-# Regenerate after reviewing changes to the fixed, selected source records:
-python3 demo/tools/build_evidence.py --source ../shoepoc
-```
-
-The exporter selects explicit fields and records, validates their expected
-commands and available outcomes, and stores source-file SHA-256 hashes for review.
-It does not modify the lab, install software, or connect to running services.
+`demo/core.js` holds the whole model: network, attack steps, SOC profiles and scoring. Everything on screen and in the report is computed from one event list it compiles, so they can't disagree. The SOCs, bank and logs are simulated and labeled as such; the profiles are deliberate trade-offs (fastest is not best). The homepage hero shows SOC B from this model, and a test fails if the two drift apart.
 
 ### Checks
 
 ```sh
-node --test demo/tests/*.test.cjs
+node --test demo/tests/sim.test.cjs
 node --check demo/app.js
-python3 demo/tools/build_evidence.py --source ../shoepoc --check
 ```
 
-An optional dependency-free browser check connects to a local Chrome DevTools
-endpoint on port 9223: `node demo/tests/browser-check.mjs /tmp/blueboot-previews`.
-It blocks HTTP(S) requests, exercises the presentation and evidence boundaries,
-checks five viewport widths, and saves screenshots. Run Chrome headlessly with a
-temporary profile and remote debugging enabled before invoking it. It requires
-Node 22 or newer for the built-in WebSocket client; the website itself does not
-require Node.
-
-Before the event, open at laptop and phone widths, walk through all chapters,
-make a choice, inspect a record before and after the reveal, change the example
-response, and confirm restart clears the session. Disconnect the network and
-reload the demo. Use a laptop browser's fullscreen mode for a booth display.
+The browser check drives the full flow with all network access blocked and checks five widths for horizontal overflow. Start headless Chrome with `--remote-debugging-port=9223` and a temporary profile, then run `node demo/tests/browser-check.mjs <screenshot-dir>` (Node 22+).

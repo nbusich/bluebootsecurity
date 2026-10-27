@@ -3,85 +3,91 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Step inside a virtual company. Follow everyday work and an attack from activity to evidence to an independent SOC evaluation.">
+  <meta name="description" content="Run a BlueBoot evaluation: pick the SOCs, watch a bank's workday with an attack running through it, and see how each SOC scores.">
   <meta name="theme-color" content="#08121f">
-  <title>Inside the evaluation | BlueBoot Security</title>
+  <title>Run an evaluation | BlueBoot Security</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../fonts/archivo-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="demo.css">
-  <script defer src="evidence.js"></script>
   <script defer src="core.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#scene">Skip to the demonstration</a>
+  <a class="skip-link" href="#console">Skip to the evaluation</a>
   <header class="topbar">
     <a class="wordmark" href="../index.html" aria-label="BlueBoot Security home"><svg viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg>BlueBoot <span>Security</span></a>
-    <span class="header-context">Inside the evaluation</span>
+    <span class="run-name">Evaluation run: <strong>Northstar Bank</strong></span>
+    <span class="sim-chip">Simulated SOCs, fictional bank</span>
     <a class="back-link" href="../index.html#demo">Back to the website</a>
   </header>
 
-  <main class="demo-shell">
-    <div class="session-bar">
-      <span class="session-label">Interactive walkthrough, about 2 minutes</span>
-      <div class="session-actions">
-        <button class="text-button" id="lab-button" aria-haspopup="dialog">Explore the evidence</button>
-        <button class="icon-button" id="fullscreen" aria-label="Enter fullscreen" title="Fullscreen">⛶</button>
+  <main id="console" class="console" data-phase="setup" tabindex="-1">
+    <div class="bar">
+      <ol class="phases" aria-label="Evaluation phases">
+        <li data-phase="setup">Pick SOCs</li>
+        <li data-phase="run">Run the workday</li>
+        <li data-phase="report">Report</li>
+      </ol>
+      <div class="clock-block"><time id="clock" aria-label="Simulated time">09:00</time></div>
+      <div class="track" id="track" aria-hidden="true"><div class="track-fill" id="track-fill"></div></div>
+      <div class="transport">
+        <button class="icon-button" id="play" aria-label="Pause" disabled><span id="play-icon" aria-hidden="true">Ⅱ</span></button>
+        <div class="speed" role="group" aria-label="Playback speed">
+          <button data-speed="1" aria-pressed="true" disabled>1×</button>
+          <button data-speed="4" aria-pressed="false" disabled>4×</button>
+        </div>
+        <button class="text-button" id="skip" disabled>Skip to report</button>
+        <button class="icon-button" id="fullscreen" aria-label="Enter fullscreen" title="Fullscreen"><span aria-hidden="true">⛶</span></button>
       </div>
     </div>
 
-    <nav class="chapters" aria-label="Demo chapters" id="chapters"></nav>
-
     <div class="workspace">
-      <section class="story-panel" aria-labelledby="scene-title">
-        <div id="scene" tabindex="-1"></div>
-        <div class="presenter-note"><span class="tiny-label">The idea</span><p id="takeaway"></p></div>
+      <section class="network-panel" aria-label="Bank network">
+        <svg id="network" viewBox="0 0 760 410" role="group" aria-label="Northstar Bank network. Select a device to see its logs."></svg>
+        <div class="inspector" id="inspector" aria-live="polite"></div>
       </section>
 
-      <section class="company-panel" aria-label="Illustrative virtual company">
-        <div class="panel-heading"><div><span class="tiny-label">The virtual company</span><h2>Northstar Works<span class="fictional">Fictional</span></h2></div></div>
-        <div class="company-stats"><span><strong>240</strong> employees</span><span><strong>3</strong> offices</span><span><strong>4</strong> departments</span></div>
-        <div class="org-map" id="org-map">
-          <div class="office-row"><span><i></i> London</span><span><i></i> New York</span><span><i></i> Singapore</span></div>
-          <div class="department-grid">
-            <div class="department engineering"><div><strong>Engineering</strong><span>Building and testing</span></div><div class="endpoint-dots" aria-hidden="true"></div></div>
-            <div class="department"><div><strong>Finance</strong><span>Invoices and reporting</span></div><div class="endpoint-dots" aria-hidden="true"></div></div>
-            <div class="department"><div><strong>Operations</strong><span>Services and support</span></div><div class="endpoint-dots" aria-hidden="true"></div></div>
-            <div class="department"><div><strong>Sales</strong><span>Customers and collaboration</span></div><div class="endpoint-dots" aria-hidden="true"></div></div>
-          </div>
-          <div class="focus-connector"><span>Zoom into one workstation</span></div>
-          <div class="workstation"><div><strong>Alex’s workstation</strong><span>Engineer, working on an internal app</span></div><span class="machine-label">employee1</span></div>
-          <div class="signal-connector"><span class="signal-particle"></span><span>Endpoint records and security logs</span></div>
-          <div class="pipeline"><div class="pipeline-node" id="sensor-node"><strong>Security platform</strong><small>Collect the evidence</small></div><span class="pipeline-arrow" aria-hidden="true">→</span><div class="pipeline-node" id="soc-node"><strong>SOC under test</strong><small>Investigate and respond</small></div><span class="pipeline-arrow" aria-hidden="true">→</span><div class="pipeline-node" id="judge-node"><strong>Independent evaluation</strong><small>Compare with known truth</small></div></div>
+      <section class="soc-panel" aria-label="SOCs under evaluation">
+        <div class="setup" id="setup">
+          <h1>Pick the SOCs to evaluate</h1>
+          <div class="soc-picks" id="soc-picks" role="group" aria-label="SOCs"></div>
+          <button class="primary-button" id="start">Start the workday</button>
         </div>
-        <p class="scale-note">Company size, offices and people are illustrative. The evidence in this walkthrough comes from one recorded lab workstation.</p>
-        <div class="map-caption" id="map-caption"></div>
+        <div class="lanes" id="lanes" hidden>
+          <div class="lanes-body">
+            <div class="lane-overlay" id="lane-overlay" aria-hidden="true"></div>
+            <div id="lane-list"></div>
+          </div>
+          <div class="time-axis" aria-hidden="true"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div>
+        </div>
+      </section>
+
+      <section class="report" id="report" hidden aria-labelledby="report-title">
+        <h2 id="report-title" tabindex="-1">Evaluation report</h2>
+        <p class="report-sub">Same bank, same attack, same workday.</p>
+        <div class="table-wrap">
+          <table class="scorecard">
+            <thead><tr><th scope="col">SOC</th><th scope="col">Attacks detected</th><th scope="col">False alarms</th><th scope="col">Mean time to detect</th><th scope="col">Max time to detect</th><th scope="col">Mean time to respond</th><th scope="col">Contained before data left</th><th scope="col">Overall</th></tr></thead>
+            <tbody id="report-body"></tbody>
+          </table>
+        </div>
+        <div class="report-actions">
+          <button class="secondary-button" id="swap">Swap SOCs</button>
+          <button class="primary-button" id="again">Watch again</button>
+        </div>
       </section>
     </div>
 
-    <div class="playback">
-      <div class="playback-left"><button class="play-button" id="play" aria-label="Start automatic replay"><span id="play-icon" aria-hidden="true">▶</span></button><div><strong id="play-label">Take it at your pace</strong><span id="play-detail">Or play a two-minute loop</span></div></div>
-      <div class="transport"><button class="text-button" id="restart">Restart</button><button class="secondary-button" id="previous">Back</button><button class="primary-button" id="next">See the activity</button></div>
-      <div class="progress-track"><div id="progress-fill"></div></div>
-    </div>
-    <footer class="demo-footer"><span>Recorded evidence. Illustrative company. Example SOC responses.</span><span>Works offline, with no live connection.</span></footer>
+    <ul class="legend" aria-label="Legend">
+      <li><i class="g g-attack"></i>Attack step</li>
+      <li><i class="g g-detect"></i>Detected</li>
+      <li><i class="g g-respond"></i>Responded</li>
+      <li><i class="g g-miss"></i>Missed</li>
+      <li><i class="g g-fa"></i>False alarm</li>
+      <li><i class="g g-log"></i>Normal log</li>
+    </ul>
     <div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
   </main>
-
-  <dialog id="evidence-dialog" aria-labelledby="dialog-title">
-    <div class="dialog-top"><span class="tiny-label">Evidence explorer</span><button class="icon-button" id="close-dialog" aria-label="Close evidence explorer">×</button></div>
-    <h2 id="dialog-title">Follow the evidence.</h2>
-    <p class="dialog-intro">Selected, field-limited excerpts from a recorded experiment. No live lab or internet connection is needed.</p>
-    <div id="evidence-tabs" class="evidence-tabs" role="group" aria-label="Select an evidence record"></div>
-    <div id="evidence-detail"></div>
-    <details class="methodology"><summary>How the methodology works</summary><div>
-      <h3>Build a company with a known activity record</h3><p>Automated employees do ordinary work while a separate simulation introduces attack activity. Each action retains its origin, time, machine and available execution outcome.</p>
-      <h3>Collect what a defender can see</h3><p>A SIEM collects and searches security logs and alerts. XDR connects signals across endpoints and other sources. This recorded example uses endpoint audit alerts collected by a security platform; it does not demonstrate a separate XDR integration.</p>
-      <h3>Keep the answer key separate</h3><p>For an evaluation, a SOC receives agreed security-platform access or a supported integration. Evaluator-only activity labels and scenario markers must be excluded from that feed. Access and available evidence are documented before comparison.</p>
-      <h3>Label with evidence, preserve uncertainty</h3><p>Time, machine, command and process relationships help associate logs with actions. A nearby timestamp alone is insufficient. Unconfirmed execution and ambiguous attribution remain explicit and are excluded from scored outcomes.</p>
-      <h3>Evaluate responses, not just logs</h3><p>A log proves visibility, not SOC understanding. Assess the SOC’s incident report and response against verified activity and a rubric defined in advance. Real response timing starts at an agreed evidence-availability point. No actual SOC is measured here.</p>
-    </div></details>
-    <p class="dialog-footnote">This is a presentation replay, not a connected SOC or an evaluation access-control system. The excerpts are bundled locally.</p>
-  </dialog>
-  <noscript><div class="noscript">This interactive demo needs JavaScript. Enable it to follow the replay, or <a href="../index.html#how">read how the evaluation works</a>.</div></noscript>
+  <noscript><div class="noscript">This demo needs JavaScript. <a href="../index.html#how">Read how the evaluation works</a>.</div></noscript>
 </body>
 </html>
