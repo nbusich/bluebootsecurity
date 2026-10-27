@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BlueBoot Security | Independent SOC evaluation</title>
-  <meta name="description" content="Do you have the best SOC on the market? BlueBoot Security puts your SOC up against a realistic simulated company under attack and scores what it catches.">
+  <title>BlueBoot Security | Head-to-head SOC evaluation</title>
+  <meta name="description" content="BlueBoot Security runs MDRs and agentic SOCs against the same simulated attacks and measures how fast they detect and respond, so CISOs can compare them head to head.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BlueBoot Security">
-  <meta property="og:title" content="BlueBoot Security | Independent SOC evaluation">
-  <meta property="og:description" content="Do you have the best SOC on the market? BlueBoot Security puts your SOC up against a realistic simulated company under attack and scores what it catches.">
+  <meta property="og:title" content="BlueBoot Security | Head-to-head SOC evaluation">
+  <meta property="og:description" content="BlueBoot Security runs MDRs and agentic SOCs against the same simulated attacks and measures how fast they detect and respond, so CISOs can compare them head to head.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script>document.documentElement.dataset.bsTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +27,9 @@
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto align-items-md-center">
           <li class="nav-item"><a class="nav-link" href="#problem">Problem</a></li>
+          <li class="nav-item"><a class="nav-link" href="#measure">Metrics</a></li>
           <li class="nav-item"><a class="nav-link" href="#how">How it works</a></li>
-          <li class="nav-item"><a class="nav-link" href="#offer">Offer</a></li>
+          <li class="nav-item"><a class="nav-link" href="#who">Who it's for</a></li>
           <li class="nav-item ms-md-2"><a class="btn btn-primary btn-sm px-3 my-2 my-md-0" href="#contact">Contact</a></li>
         </ul>
       </div>
@@ -41,15 +42,15 @@
       <div class="row g-5 align-items-center">
         <div class="col-lg-6">
           <h1 class="head head-xl mb-4">Do you have the best SOC on the market?</h1>
-          <p class="lead mb-4">BlueBoot Security puts your SOC up against a realistic simulated company under attack and scores what it catches.</p>
+          <p class="lead mb-4">BlueBoot Security runs MDRs and agentic SOCs against the same simulated attacks and measures how fast they detect and respond, so you can compare them head to head.</p>
           <div class="d-grid gap-2 d-sm-flex">
-            <a href="#contact" class="btn btn-primary btn-lg px-4">Get evaluated</a>
+            <a href="#contact" class="btn btn-primary btn-lg px-4">Request an evaluation</a>
             <a href="#how" class="btn btn-outline-ink btn-lg px-4">How it works</a>
           </div>
         </div>
         <div class="col-lg-6">
-          <figure class="replay" aria-label="Sample evaluation: eight attack techniques run against a SOC, five detected and three missed">
-            <figcaption class="replay-head"><strong>Sample evaluation</strong><span>Simulated attack, one workday</span></figcaption>
+          <figure class="replay" aria-label="Sample evaluation of one MDR: eight attack techniques, five detected, mean time to detect 11 minutes, mean time to respond 47 minutes">
+            <figcaption class="replay-head"><strong>Sample evaluation</strong><span>One MDR, one simulated attack</span></figcaption>
             <ol class="replay-list">
               <li style="--i:0"><time>09:02</time><code>T1566</code><span>Phishing email opened</span><span class="res res-hit">Detected</span></li>
               <li style="--i:1"><time>09:04</time><code>T1204</code><span>Malicious attachment run</span><span class="res res-miss">Missed</span></li>
@@ -60,7 +61,11 @@
               <li style="--i:6"><time>11:05</time><code>T1021</code><span>Lateral move over RDP</span><span class="res res-hit">Detected</span></li>
               <li style="--i:7"><time>11:47</time><code>T1041</code><span>Data exfiltrated</span><span class="res res-miss">Missed</span></li>
             </ol>
-            <div class="replay-foot"><span>MITRE ATT&amp;CK&reg; techniques</span><span class="replay-score"><strong>5</strong> of 8 detected</span></div>
+            <dl class="replay-foot">
+              <div><dt>Detected</dt><dd>5 of 8</dd></div>
+              <div><dt>Mean time to detect</dt><dd>11 min</dd></div>
+              <div><dt>Mean time to respond</dt><dd>47 min</dd></div>
+            </dl>
           </figure>
         </div>
       </div>
@@ -70,22 +75,23 @@
   <section id="problem" class="band band-paper">
     <div class="container px-4">
       <div class="row g-5">
-        <div class="col-lg-4">
-          <h2 class="head head-lg">Today, nobody can say for sure.</h2>
+        <div class="col-lg-5">
+          <h2 class="head head-lg mb-3">100+ agentic SOCs. No head-to-head comparison.</h2>
+          <p class="text-body-secondary mb-0">A SOC turns security logs into alerts, triages them and responds. AI now automates much of that work, in an estimated $20B market expected to reach $80B within three years.</p>
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-7">
           <ul class="problem-list">
             <li>
-              <h3 class="head head-sm mb-0">Evaluations are rare</h3>
-              <p>Independent testing is slow and manual, so most SOC and MDR providers are never measured.</p>
+              <h3 class="head head-sm mb-0">No apples-to-apples results</h3>
+              <p>MDRs don't publish comparable evaluations, so CISOs choose on customer references and analyst guides without measured results.</p>
             </li>
             <li>
-              <h3 class="head head-sm mb-0">Claims can't be compared</h3>
-              <p>Buyers choose on marketing, not measured detection.</p>
+              <h3 class="head head-sm mb-0">Trials on real data are costly</h3>
+              <p>Testing a SOC on your own environment means a long, resource-intensive effort from legal and engineering.</p>
             </li>
             <li>
-              <h3 class="head head-sm mb-0">Real data can't be shared</h3>
-              <p>Testing on real company logs exposes sensitive information.</p>
+              <h3 class="head head-sm mb-0">Existing evaluations are narrow</h3>
+              <p>MITRE's yearly evaluations are rigorous, but run one fixed campaign with little realistic benign traffic and no customization.</p>
             </li>
           </ul>
         </div>
@@ -93,10 +99,37 @@
     </div>
   </section>
 
-  <section id="how" class="band">
+  <section id="measure" class="band">
+    <div class="container px-4">
+      <h2 class="head head-lg mb-3">What we measure</h2>
+      <p class="lead mb-0">The same numbers for every SOC, from the same attacks.</p>
+      <div class="row g-4 mt-4">
+        <div class="col-md-6">
+          <div class="metric-key">
+            <h3 class="head head-lg mb-2">Mean time to detect</h3>
+            <p>From the first attack step to the SOC's first alert, plus the slowest catch.</p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="metric-key">
+            <h3 class="head head-lg mb-2">Mean time to respond</h3>
+            <p>From alert to containment, graded on how completely the threat was handled.</p>
+          </div>
+        </div>
+      </div>
+      <ul class="metric-list">
+        <li><h3 class="head head-sm mb-0">Detection completeness</h3><p>Were all attack steps caught?</p></li>
+        <li><h3 class="head head-sm mb-0">Alert precision</h3><p>How much of the alert volume was false positives.</p></li>
+        <li><h3 class="head head-sm mb-0">Attack coverage</h3><p>Which ATT&amp;CK techniques and attack types the SOC handles.</p></li>
+        <li><h3 class="head head-sm mb-0">Onboarding time</h3><p>How long it takes to connect the SOC and start detecting.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="how" class="band band-paper">
     <div class="container px-4">
       <h2 class="head head-lg mb-3">How it works</h2>
-      <p class="lead mb-0">We simulate a realistic organization and record what its defenders would see.</p>
+      <p class="lead mb-0">We start with MDRs and evaluate detection, triage and response.</p>
       <ol class="pipeline">
         <li>
           <span class="pipe-num" aria-hidden="true">1</span>
@@ -106,51 +139,56 @@
         <li>
           <span class="pipe-num" aria-hidden="true">2</span>
           <h3 class="head head-sm mb-0">Generate activity</h3>
-          <p>Everyday employee behavior alongside known attack techniques (MITRE ATT&amp;CK&reg;).</p>
+          <p>Realistic employee behavior alongside emulated attack campaigns (MITRE ATT&amp;CK&reg;).</p>
         </li>
         <li>
           <span class="pipe-num" aria-hidden="true">3</span>
-          <h3 class="head head-sm mb-0">Capture telemetry</h3>
-          <p>Logs, endpoint data and alerts, collected as a security team would.</p>
+          <h3 class="head head-sm mb-0">Stream telemetry</h3>
+          <p>Logs flow from our data lake into the SOC's own SIEM and tools, as in production.</p>
         </li>
         <li>
           <span class="pipe-num" aria-hidden="true">4</span>
-          <h3 class="head head-sm mb-0">Label and package</h3>
-          <p>Every event tagged with ground truth and packaged as a dataset.</p>
+          <h3 class="head head-sm mb-0">The SOC responds</h3>
+          <p>It triages, investigates and responds as it would for a real customer.</p>
         </li>
         <li class="pipe-score">
           <span class="pipe-num" aria-hidden="true">5</span>
-          <h3 class="head head-sm mb-0">Score detections</h3>
-          <p>Every alert your SOC raises is checked against ground truth: what was caught, and what was missed.</p>
+          <h3 class="head head-sm mb-0">Score against ground truth</h3>
+          <p>Every alert and action is matched to the known attack: what was caught, how fast, and how well it was contained.</p>
         </li>
       </ol>
     </div>
   </section>
 
-  <section id="offer" class="band band-paper">
+  <section id="who" class="band">
     <div class="container px-4">
-      <h2 class="head head-lg mb-5">What we offer</h2>
+      <h2 class="head head-lg mb-5">Who it's for</h2>
       <div class="row g-4">
         <div class="col-lg-7">
           <div class="offer offer-main">
-            <h3 class="head head-lg">SOC evaluation</h3>
-            <p>An independent, repeatable score of your SOC's detection against known attack techniques.</p>
+            <h3 class="head head-lg">CISOs choosing a SOC</h3>
+            <p>Compare MDRs and agentic SOCs on the same attacks, with unbiased metrics, before you sign a contract.</p>
+            <a href="#contact" class="btn btn-primary btn-lg px-4 mt-auto align-self-start">Request an evaluation</a>
           </div>
         </div>
-        <div class="col-lg-5">
+        <div class="col-lg-5 offer-stack">
           <div class="offer offer-side">
-            <h3 class="head head-sm">Training datasets</h3>
-            <p>The same labeled telemetry, licensed to teams building and testing defensive AI. No real people or organizations, ever.</p>
+            <h3 class="head head-sm">SOC and MDR providers</h3>
+            <p>Prove your service is improving with repeatable scores, release after release.</p>
+          </div>
+          <div class="offer offer-side">
+            <h3 class="head head-sm">AI and research teams</h3>
+            <p>Labeled synthetic logs and detections for training and testing security models. No real people or organizations, ever.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="contact" class="band">
+  <section id="contact" class="band band-paper">
     <div class="container px-4">
-      <h2 class="head head-lg mb-3">Find out where your SOC stands.</h2>
-      <p class="lead mb-4">SOC teams, MDR providers and investors: let's talk.</p>
+      <h2 class="head head-lg mb-3">Know which SOC is best before you choose one.</h2>
+      <p class="lead mb-4">CISOs, SOC providers and investors: let's talk.</p>
       <div class="d-flex flex-wrap align-items-center gap-3">
         <a href="mailto:usich.n@northeastern.edu" class="btn btn-primary btn-lg px-4">Email us</a>
         <span class="text-body-secondary user-select-all">usich.n@northeastern.edu</span>
@@ -167,8 +205,9 @@
       </div>
       <ul class="nav col-md-6 justify-content-md-end mt-3 mt-md-0">
       <li class="nav-item"><a href="#problem" class="nav-link px-2">Problem</a></li>
+      <li class="nav-item"><a href="#measure" class="nav-link px-2">Metrics</a></li>
       <li class="nav-item"><a href="#how" class="nav-link px-2">How it works</a></li>
-      <li class="nav-item"><a href="#offer" class="nav-link px-2">Offer</a></li>
+      <li class="nav-item"><a href="#who" class="nav-link px-2">Who it's for</a></li>
       <li class="nav-item"><a href="#contact" class="nav-link px-2">Contact</a></li>
       </ul>
     </footer>
