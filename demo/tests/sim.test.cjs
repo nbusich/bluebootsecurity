@@ -80,8 +80,10 @@ test('the demo stays self-contained', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   for (const [, target] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
     assert.ok(!/^https?:|^\/\//.test(target), `External resource: ${target}`);
-    if (!target.startsWith('#')) assert.ok(fs.existsSync(path.resolve(root, target.split('#')[0])), target);
+    if (!target.startsWith('#')) assert.ok(fs.existsSync(path.resolve(root, target.split(/[?#]/)[0])), target);
   }
+  // Versioned URLs stop a browser pairing a new page with cached old scripts after a deploy.
+  for (const asset of ['demo.css', 'core.js', 'app.js']) assert.match(html, new RegExp(`"${asset.replace('.', '\\.')}\\?v=\\d{8}"`), `${asset} is versioned`);
   const js = fs.readFileSync(path.join(root, 'app.js'), 'utf8') + fs.readFileSync(path.join(root, 'core.js'), 'utf8');
   assert.ok(!/fetch\(|XMLHttpRequest|new WebSocket/.test(js));
   assert.ok(!/https?:\/\//.test(fs.readFileSync(path.join(root, 'demo.css'), 'utf8')));
