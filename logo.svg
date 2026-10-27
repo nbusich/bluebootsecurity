@@ -1,14 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 120" width="430" height="120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 120" width="560" height="120">
   <style>
-    text { font-family: Menlo, "DejaVu Sans Mono", Consolas, monospace; font-size: 100px; }
-    .t { fill: #0f172a; }
-    .a { fill: #0f9f7f; }
+    text { font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 64px; }
+    .t { fill: #0f172a; font-weight: 700; }
+    .s { fill: #64748b; font-weight: 400; }
+    .a { fill: #2563eb; }
     @media (prefers-color-scheme: dark) {
       .t { fill: #e2e8f0; }
-      .a { fill: #2bd4a7; }
+      .s { fill: #94a3b8; }
+      .a { fill: #60a5fa; }
     }
   </style>
-  <text class="t" x="10" y="92">shoo</text>
-  <path class="a" d="M259 52H289V70C289 79 282.25 85 274 88C265.75 85 259 79 259 70Z"/>
-  <text class="a" x="298" y="92">ai</text>
+  <path class="a" transform="translate(10 24) scale(3)" d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/>
+  <text x="96" y="82"><tspan class="t">BlueBoot</tspan><tspan class="s" dx="16">Security</tspan></text>
 </svg>
