@@ -8,9 +8,9 @@
   <title>Run an evaluation | BlueBoot Security</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="preload" href="../fonts/archivo-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="demo.css?v=20261027">
-  <script defer src="core.js?v=20261027"></script>
-  <script defer src="app.js?v=20261027"></script>
+  <link rel="stylesheet" href="demo.css?v=20261027.2">
+  <script defer src="core.js?v=20261027.2"></script>
+  <script defer src="app.js?v=20261027.2"></script>
 </head>
 <body>
   <a class="skip-link" href="#console">Skip to the evaluation</a>
@@ -43,8 +43,26 @@
 
     <div class="workspace">
       <section class="network-panel" aria-label="Bank network">
-        <svg id="network" viewBox="0 0 760 410" role="group" aria-label="Northstar Bank network. Select a device to see its logs."></svg>
+        <svg id="network" viewBox="0 10 760 412" role="group" aria-label="Northstar Bank network. Select a device to see its logs."></svg>
         <div class="inspector" id="inspector" aria-live="polite"></div>
+      </section>
+
+      <section class="queue-panel" id="queue-panel" aria-label="Attack plan">
+        <div class="queue-head">
+          <h2>Attack plan</h2>
+          <div class="attack-count"><strong id="attack-count">0</strong> of <span id="attack-total">8</span> steps run</div>
+        </div>
+        <div class="count-bar" id="count-bar" aria-hidden="true"></div>
+        <div class="queue-cols" id="queue-cols" aria-hidden="true"></div>
+        <ol class="queue" id="queue"></ol>
+        <div class="flow" id="flow">
+          <div class="flow-head">
+            <span class="q-num" id="flow-num">1</span>
+            <div class="flow-title"><strong id="flow-name"></strong><span id="flow-meta"></span></div>
+            <button class="text-button" id="follow" hidden>Follow live</button>
+          </div>
+          <div class="flow-grid" id="flow-grid"></div>
+        </div>
       </section>
 
       <section class="soc-panel" aria-label="SOCs under evaluation">
@@ -55,7 +73,7 @@
         </div>
         <div class="lanes" id="lanes" hidden>
           <div class="lanes-body">
-            <div class="lane-overlay" id="lane-overlay" aria-hidden="true"></div>
+            <div class="lane-overlay" id="lane-overlay" aria-hidden="true"><div id="lane-ticks"></div><span class="playhead" id="playhead"></span></div>
             <div id="lane-list"></div>
           </div>
           <div class="time-axis" aria-hidden="true"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div>

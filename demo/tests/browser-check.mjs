@@ -73,6 +73,10 @@ try {
   // 1. Pick SOCs: three by default, at least two required.
   assert.equal(await pressed(), 'abc');
   assert.equal(await evaluate("document.querySelectorAll('.node[role=button]').length"), 10);
+  assert.equal(await evaluate("document.querySelectorAll('#queue .q-row').length"), 8, 'the attack plan lists every step');
+  assert.equal(await evaluate("[...document.querySelectorAll('#queue-cols span')].map(s => s.textContent).join('')"), 'ABC', 'a status column per picked SOC');
+  assert.equal(await evaluate("document.querySelectorAll('#queue [data-state=planned].st').length"), 24, 'all steps planned before the day starts');
+  assert.equal(await evaluate("document.querySelector('.pip[data-state=next] text').textContent"), '1', 'the first step is marked next on the network');
   await screenshot('desktop-setup');
   await click('[data-pick="b"]');
   await click('[data-pick="c"]');
@@ -81,14 +85,26 @@ try {
   await click('[data-pick="d"]');
   assert.equal(await pressed(), 'abd');
 
-  // 2. Run the workday.
+  // 2. Run the workday. Catch the first attack step as it lands.
   await click('#start');
   assert.equal(await phase(), 'run');
   assert.equal(await evaluate("document.querySelectorAll('.lane').length"), 3);
+  for (let i = 0; i < 300 && (await text('#attack-count')) === '0'; i++) await wait(20);
+  await wait(250);
+  await click('#play');
+  assert.equal(await text('#attack-count'), '1');
+  assert.equal(await evaluate("document.querySelector('.callout').getAttribute('opacity')"), '1', 'the step is named on the network');
+  assert.match(await evaluate("document.querySelector('.callout').textContent"), /Phishing email opened/);
+  assert.equal(await evaluate("document.querySelectorAll('.pip[data-state=done]').length"), 1);
+  assert.equal(await evaluate("+document.querySelector('.token').getAttribute('opacity') + +document.querySelector('.pulse').getAttribute('opacity') > 0"), true, 'the attack is moving on the network');
+  assert.equal(await evaluate("document.querySelector('.q-row[data-step=\"0\"]').dataset.state"), 'current');
+  await screenshot('desktop-step');
+  await click('#play');
   await click('[data-speed="4"]');
-  await wait(11000);
+  for (let i = 0; i < 300 && Number(await text('#attack-count')) < 6; i++) await wait(100);
+  await wait(1500);
   const clock = await text('#clock');
-  assert.ok(clock > '12:00' && clock < '17:00', `clock advanced: ${clock}`);
+  assert.ok(clock > '12:40' && clock < '17:00', `clock advanced: ${clock}`);
   assert.ok(await evaluate("document.querySelectorAll('.node.is-compromised').length") >= 1, 'attack visible on the network');
   assert.ok(await evaluate("document.querySelectorAll('.m-detect').length") >= 3, 'detections on the lanes');
   await click('[data-node="teller"]');
@@ -97,6 +113,17 @@ try {
   await click('[data-soc="b"]');
   assert.equal(await evaluate("document.querySelector('[data-soc=b]').getAttribute('aria-pressed')"), 'true');
   assert.ok(await evaluate("document.querySelectorAll('.node.is-caught').length") >= 1, 'focused SOC shown on the network');
+  const count = Number(await text('#attack-count'));
+  assert.ok(count >= 5, `attack steps counted: ${count}`);
+  const shown = await evaluate("[...document.querySelectorAll('.q-row[data-step=\"0\"] .st')].map(s => s.dataset.state).join()");
+  const model = await evaluate("(() => { const ev = Evaluation.compileTimeline(['a','b','d']); const t = Evaluation.steps[0].t + 1000; return ['a','b','d'].map(id => Evaluation.stepStatus(ev, id, 0, t)).join(); })()");
+  assert.equal(shown, model, 'step 1 statuses match the model');
+  assert.equal(await evaluate("document.querySelectorAll('#flow-grid .fs-soc').length"), 3, 'the flow card has a row per SOC');
+  await click('.q-row[data-step="3"]');
+  assert.equal(await text('#flow-name'), 'Scheduled task created');
+  assert.equal(await evaluate("document.querySelector('#follow').hidden"), false);
+  await click('#follow');
+  assert.equal(await evaluate("document.querySelector('.q-row[aria-pressed=true]')"), null, 'Follow live unpins');
   await click('#play');
   const paused = await text('#clock');
   await wait(600);
@@ -115,6 +142,31 @@ try {
   await click('#swap');
   assert.equal(await phase(), 'setup');
   assert.equal(await pressed(), 'abd', 'Swap SOCs keeps the selection');
+
+  // Reduced motion: no travelling token or pulse, but the step is still named and counted.
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await click('#start');
+  for (let i = 0; i < 300 && (await text('#attack-count')) === '0'; i++) await wait(20);
+  await click('#play');
+  assert.equal(await evaluate("document.querySelector('.token').getAttribute('opacity')"), '0');
+  assert.equal(await evaluate("document.querySelector('.callout').getAttribute('opacity')"), '1');
+  assert.equal(await evaluate("document.querySelectorAll('.node.is-compromised').length"), 1);
+  await click('#skip');
+  await click('#swap');
+  await send('Emulation.setEmulatedMedia', { features: [] });
+
+  for (const [w, h] of [[1440, 900], [1280, 800]]) {
+    await send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: false });
+    await click('#start');
+    await click('[data-speed="4"]');
+    await wait(5000);
+    await click('#play');
+    const bottom = await evaluate("Math.round(document.querySelector('.legend').getBoundingClientRect().bottom)");
+    console.log(`${w}x${h}: console ends at ${bottom}px`);
+    await screenshot(`fit-${w}x${h}`);
+    await click('#skip');
+    await click('#swap');
+  }
 
   for (const width of [1440, 1024, 768, 390, 320]) {
     await send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 600 });

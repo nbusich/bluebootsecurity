@@ -136,6 +136,30 @@
     return lineup.map(id => score(id, events)).sort((a, b) => b.overall - a.overall);
   }
 
+  // Where one attack step stands for one SOC at time t: planned -> executed -> detected ->
+  // responded, or missed. A detection with no response by MISS_WINDOW counts as no response.
+  function stepFlow(events, id, i, t) {
+    const flow = { executedAt: null, detectedAt: null, respondedAt: null, missed: false, noResponse: false };
+    for (const e of events) {
+      if (e.t > t) break;
+      if (e.step !== i) continue;
+      if (e.type === 'attack') flow.executedAt = e.t;
+      else if (e.soc === id && e.type === 'detect') flow.detectedAt = e.t;
+      else if (e.soc === id && e.type === 'respond') flow.respondedAt = e.t;
+      else if (e.soc === id && e.type === 'miss') flow.missed = true;
+    }
+    if (flow.detectedAt !== null && flow.respondedAt === null && t >= flow.detectedAt + MISS_WINDOW) flow.noResponse = true;
+    return flow;
+  }
+  function stepStatus(events, id, i, t) {
+    const f = stepFlow(events, id, i, t);
+    if (f.executedAt === null) return 'planned';
+    if (f.respondedAt !== null) return 'responded';
+    if (f.detectedAt !== null) return 'detected';
+    return f.missed ? 'missed' : 'waiting';
+  }
+  function executedCount(t) { return steps.filter(s => s.t <= t).length; }
+
   const pad = n => String(n).padStart(2, '0');
   function clock(t) { const m = Math.floor(t); return `${pad(Math.floor(m / 60))}:${pad(m % 60)}`; }
   function duration(min) {
@@ -146,7 +170,7 @@
     return `${Math.floor(r / 60)} h ${r % 60} min`;
   }
 
-  const api = { DAY_START, DAY_END, MISS_WINDOW, nodes, edges, steps, socs, defaultLineup, weights, benignEvents, compileTimeline, score, report, clock, duration };
+  const api = { DAY_START, DAY_END, MISS_WINDOW, nodes, edges, steps, socs, defaultLineup, weights, benignEvents, compileTimeline, score, report, stepFlow, stepStatus, executedCount, clock, duration };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Evaluation = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

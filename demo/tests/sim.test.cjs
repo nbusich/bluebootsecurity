@@ -83,9 +83,27 @@ test('the demo stays self-contained', () => {
     if (!target.startsWith('#')) assert.ok(fs.existsSync(path.resolve(root, target.split(/[?#]/)[0])), target);
   }
   // Versioned URLs stop a browser pairing a new page with cached old scripts after a deploy.
-  for (const asset of ['demo.css', 'core.js', 'app.js']) assert.match(html, new RegExp(`"${asset.replace('.', '\\.')}\\?v=\\d{8}"`), `${asset} is versioned`);
+  for (const asset of ['demo.css', 'core.js', 'app.js']) assert.match(html, new RegExp(`"${asset.replace('.', '\\.')}\\?v=\\d{8}(\\.\\d+)?"`), `${asset} is versioned`);
   const js = fs.readFileSync(path.join(root, 'app.js'), 'utf8') + fs.readFileSync(path.join(root, 'core.js'), 'utf8');
   assert.ok(!/fetch\(|XMLHttpRequest|new WebSocket/.test(js));
   assert.ok(!/https?:\/\//.test(fs.readFileSync(path.join(root, 'demo.css'), 'utf8')));
   assert.match(html, /Simulated SOCs, fictional bank/);
+});
+
+test('per-step status agrees with the scorecard and turns missed on time', () => {
+  const events = E.compileTimeline(all);
+  for (const id of all) {
+    const s = E.score(id, events);
+    E.steps.forEach((step, i) => {
+      const status = E.stepStatus(events, id, i, E.DAY_END);
+      assert.equal(status === 'detected' || status === 'responded', s.perStep[i], `${id} step ${i + 1}: ${status}`);
+      assert.equal(status === 'responded', events.some(e => e.type === 'respond' && e.soc === id && e.step === i));
+      assert.equal(E.stepStatus(events, id, i, step.t - 0.01), 'planned');
+    });
+  }
+  const t = E.steps[1].t; // SOC B misses step 2
+  assert.equal(E.stepStatus(events, 'b', 1, t + E.MISS_WINDOW - 0.01), 'waiting');
+  assert.equal(E.stepStatus(events, 'b', 1, t + E.MISS_WINDOW), 'missed');
+  assert.equal(E.executedCount(E.DAY_START), 0);
+  assert.equal(E.executedCount(E.DAY_END), E.steps.length);
 });
