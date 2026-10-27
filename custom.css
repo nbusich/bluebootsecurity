@@ -1,86 +1,246 @@
-/* Brand colours on top of Bootstrap 5.3 */
+/* BlueBoot Security, layered on Bootstrap 5.3.
+   Blue = detected (and brand). Orange = missed, and nothing else. */
 :root, [data-bs-theme="light"] {
-  --bs-primary: #2563eb;
-  --bs-primary-rgb: 37, 99, 235;
-  --bs-primary-text-emphasis: #1e3a8a;
-  --bs-primary-bg-subtle: #dbeafe;
-  --bs-primary-border-subtle: #bfdbfe;
-  --bs-link-color: #2563eb;
-  --bs-link-color-rgb: 37, 99, 235;
-  --bs-link-hover-color: #1d4ed8;
-  --bs-link-hover-color-rgb: 29, 78, 216;
+  --ink: #0c1b33;
+  --paper: #f3f6fa;
+  --slate: #56657d;
+  --blue: #1f4fe0;
+  --blue-hover: #1a41b8;
+  --signal: #c2410c;
+  --line: #d7dee9;
+  --panel: #0c1b33;
+  --panel-text: #e6ecf5;
+  --panel-muted: #8e9db5;
+  --panel-line: #22355a;
+  --panel-hit: #7ea2ff;
+  --panel-miss: #ff8a5b;
+
+  --bs-body-font-family: "Archivo", system-ui, sans-serif;
+  --bs-font-monospace: "JetBrains Mono", ui-monospace, monospace;
+  --bs-body-color: var(--ink);
+  --bs-body-bg: #fff;
+  --bs-emphasis-color: var(--ink);
+  --bs-secondary-color: var(--slate);
+  --bs-border-color: var(--line);
+  --bs-primary: var(--blue);
+  --bs-primary-rgb: 31, 79, 224;
+  --bs-link-color: var(--blue);
+  --bs-link-color-rgb: 31, 79, 224;
+  --bs-link-hover-color: var(--blue-hover);
+  --bs-link-hover-color-rgb: 26, 65, 184;
+  --bs-focus-ring-color: rgba(31, 79, 224, .35);
 }
 [data-bs-theme="dark"] {
-  --bs-primary: #60a5fa;
-  --bs-primary-rgb: 96, 165, 250;
-  --bs-primary-text-emphasis: #bfdbfe;
-  --bs-primary-bg-subtle: #172554;
-  --bs-primary-border-subtle: #1e40af;
-  --bs-link-color: #60a5fa;
-  --bs-link-color-rgb: 96, 165, 250;
-  --bs-link-hover-color: #93c5fd;
-  --bs-link-hover-color-rgb: 147, 197, 253;
+  --ink: #e6ecf5;
+  --paper: #0f1e33;
+  --slate: #9aa8bd;
+  --blue: #7ea2ff;
+  --blue-hover: #a5bfff;
+  --signal: #ff8a5b;
+  --line: #22355a;
+  --panel: #0f1e33;
+
+  --bs-body-bg: #08121f;
+  --bs-primary-rgb: 126, 162, 255;
+  --bs-link-color-rgb: 126, 162, 255;
+  --bs-link-hover-color-rgb: 165, 191, 255;
+  --bs-focus-ring-color: rgba(126, 162, 255, .4);
 }
 
+body { line-height: 1.6; }
+.lead { font-size: 1.1875rem; line-height: 1.55; color: var(--slate); max-width: 34em; }
+.text-balance { text-wrap: balance; }
+html { scroll-behavior: smooth; }
+section, header { scroll-margin-top: 4.5rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Expanded Archivo carries the headlines */
+.head {
+  font-stretch: 120%;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.head-xl { font-size: clamp(2.125rem, 5.4vw, 4.25rem); }
+.head-lg { font-size: clamp(1.75rem, 3.2vw, 2.5rem); }
+.head-sm { font-size: 1.125rem; font-stretch: 112%; font-weight: 700; line-height: 1.3; letter-spacing: 0; }
+
+/* Buttons: blue fill, ink outline */
+.btn { font-weight: 600; border-radius: 6px; }
 .btn-primary {
-  --bs-btn-bg: #2563eb;
-  --bs-btn-border-color: #2563eb;
-  --bs-btn-hover-bg: #1d4ed8;
-  --bs-btn-hover-border-color: #1d4ed8;
-  --bs-btn-active-bg: #1e40af;
-  --bs-btn-active-border-color: #1e40af;
-  --bs-btn-disabled-bg: #2563eb;
-  --bs-btn-disabled-border-color: #2563eb;
-  --bs-btn-focus-shadow-rgb: 37, 99, 235;
+  --bs-btn-bg: #1f4fe0;
+  --bs-btn-border-color: #1f4fe0;
+  --bs-btn-hover-bg: #1a41b8;
+  --bs-btn-hover-border-color: #1a41b8;
+  --bs-btn-active-bg: #15379c;
+  --bs-btn-active-border-color: #15379c;
+  --bs-btn-focus-shadow-rgb: 31, 79, 224;
 }
-.bg-primary { background-color: #2563eb !important; }
+.btn-outline-ink {
+  --bs-btn-color: var(--ink);
+  --bs-btn-border-color: var(--ink);
+  --bs-btn-hover-color: var(--bs-body-bg);
+  --bs-btn-hover-bg: var(--ink);
+  --bs-btn-hover-border-color: var(--ink);
+  --bs-btn-active-color: var(--bs-body-bg);
+  --bs-btn-active-bg: var(--ink);
+  --bs-btn-active-border-color: var(--ink);
+  --bs-btn-focus-shadow-rgb: 12, 27, 51;
+}
 
-/* Wordmark: shield, bold "BlueBoot", muted "Security" */
+/* Navbar and wordmark */
+.site-nav { background: var(--bs-body-bg); border-bottom: 1px solid var(--line); }
+.site-nav .nav-link { color: var(--slate); font-weight: 500; }
+.site-nav .nav-link:hover { color: var(--ink); }
 .wordmark {
   font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-stretch: 120%;
+  font-weight: 800;
   line-height: 1;
-  color: var(--bs-emphasis-color);
+  color: var(--ink);
   text-decoration: none;
   white-space: nowrap;
 }
-.wordmark:hover { color: var(--bs-emphasis-color); }
-.wordmark span { font-weight: 400; color: var(--bs-secondary-color); }
+.wordmark:hover { color: var(--ink); }
+.wordmark span { font-stretch: 100%; font-weight: 400; color: var(--slate); }
 .wordmark .shield {
   width: 0.8em;
   height: 0.96em;
   margin-right: 0.4em;
   vertical-align: -0.12em;
-  fill: var(--bs-primary);
+  fill: var(--blue);
 }
 
-/* Sections: keep anchors clear of the sticky navbar */
-section { scroll-margin-top: 4rem; }
-html { scroll-behavior: smooth; }
-.hero {
-  background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(var(--bs-primary-rgb), .14), transparent);
-}
+/* Section rhythm */
+.band { padding: 5rem 0; }
+.band-paper { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+@media (max-width: 767.98px) { .band { padding: 3.5rem 0; } }
 
-/* Feature icons (from Bootstrap's "Features" example) */
-.feature-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.5rem;
-  border-radius: 0.75rem;
+/* Hero: sample evaluation replay */
+.hero { padding: 4.5rem 0 5rem; }
+.replay {
+  margin: 0;
+  background: var(--panel);
+  color: var(--panel-text);
+  border: 1px solid var(--panel-line);
+  border-radius: 10px;
+  overflow: hidden;
 }
-.step-num {
-  display: inline-flex;
+.replay-head, .replay-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: .875rem 1.25rem;
+  font-size: .875rem;
+  color: var(--panel-muted);
+}
+.replay-head { border-bottom: 1px solid var(--panel-line); }
+.replay-head strong { color: var(--panel-text); font-weight: 600; }
+.replay-foot { border-top: 1px solid var(--panel-line); }
+.replay-score { font-size: 1rem; color: var(--panel-text); }
+.replay-score strong { font-stretch: 120%; font-weight: 800; font-size: 1.375rem; }
+.replay-list { list-style: none; margin: 0; padding: .5rem 0; }
+.replay-list li {
+  display: grid;
+  grid-template-columns: 3.25rem 3.5rem 1fr auto;
   align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.75rem;
+  gap: .75rem;
+  padding: .45rem 1.25rem;
+  font-size: .9375rem;
+}
+.replay-list time, .replay-list code {
   font-family: var(--bs-font-monospace);
+  font-size: .8125rem;
+  color: var(--panel-muted);
+}
+.replay-list code { color: var(--panel-text); }
+.res {
+  font-size: .8125rem;
   font-weight: 600;
+  padding: .125rem .5rem;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+.res-hit { color: var(--panel-hit); }
+.res-miss { color: var(--panel-miss); }
+
+/* The one orchestrated moment: the attack plays out, then the verdicts land */
+@media (prefers-reduced-motion: no-preference) {
+  .replay-list li { animation: replay-row .3s ease-out both; animation-delay: calc(var(--i) * .3s + .4s); }
+  .replay-list .res { animation: replay-verdict .2s ease-out both; animation-delay: calc(var(--i) * .3s + .65s); }
+  .replay-foot { animation: replay-row .4s ease-out both; animation-delay: 3.2s; }
+}
+@keyframes replay-row { from { opacity: 0; } }
+@keyframes replay-verdict { from { opacity: 0; transform: scale(.85); } }
+
+@media (max-width: 575.98px) {
+  .replay-list li { grid-template-columns: 3.5rem 1fr auto; }
+  .replay-list time, .replay-head span, .replay-foot > span:first-child { display: none; }
+  .replay-foot { justify-content: flex-end; }
 }
 
-.text-balance { text-wrap: balance; }
+/* Problem statements */
+.problem-list { list-style: none; margin: 0; padding: 0; }
+.problem-list li { padding: 1.25rem 0; border-top: 1px solid var(--line); }
+.problem-list li:last-child { border-bottom: 1px solid var(--line); }
+.problem-list p { margin: .25rem 0 0; color: var(--slate); max-width: 36em; }
+
+/* How it works: a real sequence, so it's numbered */
+.pipeline { list-style: none; margin: 3rem 0 0; padding: 0; display: grid; gap: 2rem; }
+.pipeline li { position: relative; }
+.pipeline p { margin: .375rem 0 0; color: var(--slate); }
+.pipe-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--bs-body-bg);
+  font-stretch: 120%;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+}
+.pipeline li.pipe-score .pipe-num { background: var(--blue); border-color: var(--blue); color: #fff; }
+@media (min-width: 992px) {
+  .pipeline { grid-template-columns: repeat(5, 1fr); gap: 1.75rem; }
+  .pipeline li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: 1.125rem;
+    left: 2.25rem;
+    right: -1.75rem;
+    border-top: 2px solid var(--line);
+  }
+}
+@media (max-width: 991.98px) {
+  .pipeline li { padding-left: 3.25rem; }
+  .pipe-num { position: absolute; left: 0; top: -.25rem; margin: 0; }
+  .pipeline li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 1.0625rem;
+    top: 2rem;
+    bottom: -2rem;
+    border-left: 2px solid var(--line);
+  }
+}
+
+/* Offer: evaluation leads, datasets follow */
+.offer { height: 100%; padding: 2.25rem; border-radius: 10px; }
+.offer p { margin: .75rem 0 0; max-width: 32em; }
+.offer-main { background: var(--panel); color: var(--panel-text); border: 1px solid var(--panel-line); }
+.offer-main .head { color: #fff; }
+.offer-main p { color: var(--panel-muted); }
+.offer-side { border: 1px solid var(--line); background: var(--bs-body-bg); }
+.offer-side p { color: var(--slate); }
+
+.site-footer { border-top: 1px solid var(--line); color: var(--slate); }
+.site-footer .nav-link { color: var(--slate); }
+.site-footer .nav-link:hover { color: var(--ink); }
