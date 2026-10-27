@@ -1,5 +1,18 @@
-/* BlueBoot Security, layered on Bootstrap 5.3.
-   Blue = detected (and brand). Orange = missed, and nothing else. */
+/* BlueBoot Security, layered on Bootstrap 5.3. demo/demo.css shares these tokens.
+   Blue = detected or authorized (and brand). Orange = missed or attack, and nothing else. */
+@font-face {
+  font-family: "Archivo";
+  src: url("fonts/archivo-wdth-wght.woff2") format("woff2-variations"), url("fonts/archivo-wdth-wght.woff2") format("woff2");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/jetbrains-mono-wght.woff2") format("woff2-variations"), url("fonts/jetbrains-mono-wght.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
 :root, [data-bs-theme="light"] {
   --ink: #0c1b33;
   --paper: #f3f6fa;
@@ -264,6 +277,35 @@ section, header { scroll-margin-top: 4.5rem; }
 .offer-stack { display: flex; flex-direction: column; gap: 1.5rem; }
 .offer-stack .offer { height: auto; flex: 1; }
 .offer-side p { color: var(--slate); }
+
+/* Demo: the evaluation console, opened up */
+.demo-cta { padding: 2.5rem; border-radius: 10px; background: var(--panel); color: var(--panel-text); border: 1px solid var(--panel-line); }
+.demo-cta .head { color: #fff; }
+.demo-cta p { color: var(--panel-muted); max-width: 36em; }
+.demo-cta .demo-cta-note { font-size: .875rem; max-width: none; }
+.demo-chapters { list-style: none; counter-reset: chapter; display: grid; grid-template-columns: repeat(5, 1fr); gap: .5rem; margin: 2.25rem 0 0; padding: 0; }
+.demo-chapters li { counter-increment: chapter; display: flex; align-items: center; gap: .625rem; padding-top: .75rem; border-top: 2px solid var(--panel-line); font-size: .9375rem; color: var(--panel-muted); }
+.demo-chapters li::before {
+  content: counter(chapter);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.625rem;
+  height: 1.625rem;
+  border-radius: 50%;
+  border: 2px solid var(--panel-line);
+  font-size: .75rem;
+  font-stretch: 120%;
+  font-weight: 800;
+}
+.demo-chapters li:first-child { border-top-color: var(--panel-hit); color: var(--panel-text); }
+.demo-chapters li:first-child::before { background: #1f4fe0; border-color: #1f4fe0; color: #fff; }
+@media (max-width: 767.98px) {
+  .demo-cta { padding: 1.75rem 1.25rem; }
+  .demo-chapters { grid-template-columns: 1fr; gap: 0; }
+  .demo-chapters li { padding: .625rem 0; border-top-width: 1px; }
+}
 
 .site-footer { border-top: 1px solid var(--line); color: var(--slate); }
 .site-footer .nav-link { color: var(--slate); }
