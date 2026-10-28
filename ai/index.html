@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BlueBoot Security | Blue-team evals for AI agents</title>
+  <meta name="description" content="There are plenty of evals of how well AI can hack, and almost none of how well it defends. BlueBoot Security runs AI agents as a SOC against simulated attacks and scores how fast and well they detect and respond.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BlueBoot Security">
+  <meta property="og:title" content="BlueBoot Security | Blue-team evals for AI agents">
+  <meta property="og:description" content="There are plenty of evals of how well AI can hack, and almost none of how well it defends. BlueBoot Security runs AI agents as a SOC against simulated attacks and scores how fast and well they detect and respond.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <script>document.documentElement.dataset.bsTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';</script>
+  <link rel="preload" href="../fonts/archivo-wdth-wght.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="../custom.css?v=20261028">
+</head>
+<body class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-md site-nav sticky-top">
+    <div class="container px-4">
+      <a class="navbar-brand wordmark" href="#top" aria-label="BlueBoot Security, blue-team AI evals"><svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg>BlueBoot <span>Security</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-md-center">
+          <li class="nav-item"><a class="nav-link" href="#gap">Problem</a></li>
+          <li class="nav-item"><a class="nav-link" href="#method">Method</a></li>
+          <li class="nav-item"><a class="nav-link" href="#inspect">Inspect</a></li>
+          <li class="nav-item"><a class="nav-link" href="#roadmap">Roadmap</a></li>
+          <li class="nav-item"><a class="nav-link" href="../index.html">SOC evaluation</a></li>
+          <li class="nav-item ms-md-2"><a class="btn btn-primary btn-sm px-3 my-2 my-md-0" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow-1" id="top">
+  <header class="hero">
+    <div class="container px-4">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+          <h1 class="head head-xl mb-4">Can AI defend a network?</h1>
+          <p class="lead mb-4">There are plenty of evals of how well AI can hack. BlueBoot Security measures how well it defends: we run an AI agent as a SOC against simulated attacks and score how fast and well it detects and responds.</p>
+          <div class="d-grid gap-2 d-sm-flex">
+            <a href="#contact" class="btn btn-primary btn-lg px-4">Get in touch</a>
+            <a href="../demo/" class="btn btn-outline-ink btn-lg px-4">Explore the demo</a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <figure class="replay" aria-label="Illustrative run of a simulated defending agent: eight attack techniques, six detected, mean time to detect 1.3 minutes, mean time to respond 3.7 minutes, 14 false alarms">
+            <figcaption class="replay-head"><strong>Illustrative run</strong><span>Simulated agent, simulated attack</span></figcaption>
+            <ol class="replay-list">
+              <li style="--i:0"><time>09:40</time><code>T1566</code><span>Phishing email opened</span><span class="res res-hit">Detected</span></li>
+              <li style="--i:1"><time>09:42</time><code>T1204</code><span>Malicious attachment run</span><span class="res res-hit">Detected</span></li>
+              <li style="--i:2"><time>09:44</time><code>T1059</code><span>PowerShell launched</span><span class="res res-hit">Detected</span></li>
+              <li style="--i:3"><time>10:30</time><code>T1053</code><span>Scheduled task created</span><span class="res res-hit">Detected</span></li>
+              <li style="--i:4"><time>11:50</time><code>T1055</code><span>Process injection</span><span class="res res-miss">Missed</span></li>
+              <li style="--i:5"><time>12:40</time><code>T1003</code><span>Credentials dumped</span><span class="res res-hit">Detected</span></li>
+              <li style="--i:6"><time>13:30</time><code>T1021</code><span>Lateral move over RDP</span><span class="res res-miss">Missed</span></li>
+              <li style="--i:7"><time>15:10</time><code>T1041</code><span>Data exfiltrated</span><span class="res res-hit">Detected</span></li>
+            </ol>
+            <dl class="replay-foot replay-foot-4">
+              <div><dt>Detected</dt><dd>6 of 8</dd></div>
+              <div><dt>Mean time to detect</dt><dd>1.3 min</dd></div>
+              <div><dt>Mean time to respond</dt><dd>3.7 min</dd></div>
+              <div><dt>False alarms</dt><dd>14</dd></div>
+            </dl>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="gap" class="band band-paper">
+    <div class="container px-4">
+      <div class="row g-5">
+        <div class="col-lg-5">
+          <h2 class="head head-lg mb-3">Red-team agents are the problem. Blue-team agents are a solution.</h2>
+          <p class="text-body-secondary mb-0">Agents are getting good at finding and exploiting vulnerabilities. In loss-of-control or terrorism scenarios, society needs AI that can defend against them.</p>
+        </div>
+        <div class="col-lg-7">
+          <ul class="problem-list">
+            <li>
+              <h3 class="head head-sm mb-0">Offensive evals are everywhere</h3>
+              <p>Model cards and Inspect Evals measure whether a model can solve capture-the-flag challenges and assist cyberattacks.</p>
+            </li>
+            <li>
+              <h3 class="head head-sm mb-0">Defensive evals are missing</h3>
+              <p>Almost nothing measures whether an agent can spot an intrusion in real traffic, triage the alerts and contain it.</p>
+            </li>
+            <li>
+              <h3 class="head head-sm mb-0">No score, no north star</h3>
+              <p>You can't improve what you don't measure. A defensive benchmark gives AI developers a target to build toward.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method" class="band">
+    <div class="container px-4">
+      <h2 class="head head-lg mb-3">The same test we give SOCs</h2>
+      <p class="lead mb-0">Many SOCs are already AI agents, and they do the job we want defensive AI to do. So we evaluate an agent exactly as we evaluate a SOC.</p>
+      <ol class="pipeline">
+        <li>
+          <span class="pipe-num" aria-hidden="true">1</span>
+          <h3 class="head head-sm mb-0">Simulate an organization</h3>
+          <p>Users, workstations, servers and the network between them.</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">2</span>
+          <h3 class="head head-sm mb-0">Hide an attack in normal work</h3>
+          <p>Realistic employee activity alongside a scripted attack campaign (MITRE ATT&amp;CK&reg;).</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">3</span>
+          <h3 class="head head-sm mb-0">Give the agent a SOC's tools</h3>
+          <p>Log search, the alert queue and response actions such as isolating a host.</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">4</span>
+          <h3 class="head head-sm mb-0">The agent defends</h3>
+          <p>It triages, investigates and responds, on its own.</p>
+        </li>
+        <li class="pipe-score">
+          <span class="pipe-num" aria-hidden="true">5</span>
+          <h3 class="head head-sm mb-0">Score against ground truth</h3>
+          <p>Every alert and action is matched to the known attack.</p>
+        </li>
+      </ol>
+      <ul class="metric-list">
+        <li><h3 class="head head-sm mb-0">Time to detect</h3><p>From each attack step to the agent's first alert on it.</p></li>
+        <li><h3 class="head head-sm mb-0">Time to respond</h3><p>From alert to containment.</p></li>
+        <li><h3 class="head head-sm mb-0">Completeness</h3><p>Were all attack steps caught?</p></li>
+        <li><h3 class="head head-sm mb-0">False alarms</h3><p>Alerts on normal work.</p></li>
+        <li><h3 class="head head-sm mb-0">Containment</h3><p>Was the attack stopped before data left?</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="inspect" class="band band-paper">
+    <div class="container px-4">
+      <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+          <h2 class="head head-lg mb-3">Built for Inspect</h2>
+          <p class="lead mb-4">We'll package the evaluation as an Inspect task, so any model Inspect supports can be run against it, and submit it to Inspect Evals.</p>
+          <ul class="problem-list">
+            <li>
+              <h3 class="head head-sm mb-0">It measures defense, not hacking</h3>
+              <p>The attack is scripted. The agent under test only sees logs and defends, so its score never rewards offensive skill.</p>
+            </li>
+            <li>
+              <h3 class="head head-sm mb-0">An eval and an RL environment</h3>
+              <p>The scorer can become a reward signal and the scenarios a training set, to improve defense directly.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <ul class="inspect-map" aria-label="How the evaluation maps onto an Inspect task">
+            <li><code>dataset</code><span><strong>Scenarios</strong>An organization, a workday of activity and an attack, with its ground truth.</span></li>
+            <li><code>solver</code><span><strong>The defending agent</strong>The model under test, with log search, alerting and response tools.</span></li>
+            <li><code>scorer</code><span><strong>Ground-truth match</strong>Detection, response time, false alarms and containment, per attack step.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap" class="band">
+    <div class="container px-4">
+      <h2 class="head head-lg mb-3">A starting point for blue-team evals</h2>
+      <p class="lead mb-0">The goal is to open the door to measuring, and improving, AI's defensive capabilities.</p>
+      <ol class="pipeline pipeline-4">
+        <li class="pipe-score">
+          <span class="pipe-num" aria-hidden="true">1</span>
+          <h3 class="head head-sm mb-0">First scenario</h3>
+          <p>A bank's workday with a Carbanak-style attack. <a href="../demo/">The demo</a> scores simulated SOCs on it, one of them agentic.</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">2</span>
+          <h3 class="head head-sm mb-0">Inspect task</h3>
+          <p>Package it so anyone can run it against their own model.</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">3</span>
+          <h3 class="head head-sm mb-0">Publish</h3>
+          <p>Share the results and encourage others to build more blue-team evals.</p>
+        </li>
+        <li>
+          <span class="pipe-num" aria-hidden="true">4</span>
+          <h3 class="head head-sm mb-0">Iterate with users</h3>
+          <p>Feedback from the people running it decides what comes next.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contact" class="band band-paper">
+    <div class="container px-4">
+      <h2 class="head head-lg mb-3">Help build blue-team evals.</h2>
+      <p class="lead mb-4">AI safety researchers, labs and eval builders: run it, break it, tell us what's missing.</p>
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <a href="mailto:usich.n@northeastern.edu" class="btn btn-primary btn-lg px-4">Email us</a>
+        <span class="text-body-secondary user-select-all">usich.n@northeastern.edu</span>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <div class="container px-4">
+    <footer class="site-footer d-flex flex-wrap justify-content-between align-items-center py-4 mt-2 mb-4">
+      <div class="col-md-6 d-flex flex-wrap align-items-center gap-3">
+        <a href="#top" class="wordmark fs-5" aria-label="BlueBoot Security, blue-team AI evals"><svg class="shield" viewBox="0 0 20 24" aria-hidden="true"><path d="M0 0H20V12C20 18 15.5 22 10 24C4.5 22 0 18 0 12Z"/></svg>BlueBoot <span>Security</span></a>
+        <span>&copy; 2026 BlueBoot Security, Palo Alto, CA</span>
+      </div>
+      <ul class="nav col-md-6 justify-content-md-end mt-3 mt-md-0">
+      <li class="nav-item"><a href="#gap" class="nav-link px-2">Problem</a></li>
+      <li class="nav-item"><a href="#method" class="nav-link px-2">Method</a></li>
+      <li class="nav-item"><a href="#inspect" class="nav-link px-2">Inspect</a></li>
+      <li class="nav-item"><a href="#roadmap" class="nav-link px-2">Roadmap</a></li>
+      <li class="nav-item"><a href="../index.html" class="nav-link px-2">SOC evaluation</a></li>
+      <li class="nav-item"><a href="#contact" class="nav-link px-2">Contact</a></li>
+      </ul>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    // Close the mobile menu after jumping to a section
+    const mainNav = document.getElementById('mainNav');
+    mainNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      if (mainNav.classList.contains('show')) bootstrap.Collapse.getOrCreateInstance(mainNav).hide();
+    }));
+  </script>
+</body>
+</html>

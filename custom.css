@@ -310,3 +310,18 @@ section, header { scroll-margin-top: 4.5rem; }
 .site-footer { border-top: 1px solid var(--line); color: var(--slate); }
 .site-footer .nav-link { color: var(--slate); }
 .site-footer .nav-link:hover { color: var(--ink); }
+
+/* AI evals page: a four-figure scorecard, and the Inspect task laid out as a panel */
+.replay-foot-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 575.98px) {
+  .replay-foot-4 { grid-template-columns: repeat(2, 1fr); }
+  .replay-foot-4 div:nth-child(3) { border-left: 0; }
+  .replay-foot-4 div:nth-child(n+3) { border-top: 1px solid var(--panel-line); }
+}
+.inspect-map { list-style: none; margin: 0; padding: 0; border-radius: 10px; background: var(--panel); border: 1px solid var(--panel-line); overflow: hidden; }
+.inspect-map li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; padding: 1rem 1.5rem; color: var(--panel-muted); }
+.inspect-map li + li { border-top: 1px solid var(--panel-line); }
+.inspect-map code { font-family: var(--bs-font-monospace); font-size: .875rem; color: var(--panel-hit); padding-top: .125rem; }
+.inspect-map strong { display: block; color: var(--panel-text); font-weight: 600; }
+@media (max-width: 575.98px) { .inspect-map li { grid-template-columns: 1fr; gap: .25rem; padding: 1rem 1.25rem; } }
+@media (min-width: 992px) { .pipeline-4 { grid-template-columns: repeat(4, 1fr); } }

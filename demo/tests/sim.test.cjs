@@ -51,19 +51,38 @@ test('the report is derived from the events the console shows', () => {
   assert.equal(misses, E.steps.length - E.score('d', events).detected);
 });
 
-test('the homepage hero shows SOC B from this model', () => {
-  const html = fs.readFileSync(path.join(__dirname, '..', '..', 'index.html'), 'utf8');
+// The landing-page heroes are sample runs from this model, so they can't drift from the demo.
+function heroMatches(page, id, extraFoot = []) {
+  const html = fs.readFileSync(path.join(__dirname, '..', '..', page), 'utf8');
   const rows = [...html.matchAll(/<li style="--i:\d+"><time>([\d:]+)<\/time><code>(T\d+)<\/code><span>([^<]+)<\/span><span class="res res-(hit|miss)">/g)];
-  const b = E.score('b', E.compileTimeline(['b']));
+  const s = E.score(id, E.compileTimeline([id]));
   assert.equal(rows.length, E.steps.length);
-  rows.forEach(([, time, id, name, res], i) => {
-    assert.equal(time, E.clock(E.steps[i].t), `${id} time`);
-    assert.equal(id, E.steps[i].id);
+  rows.forEach(([, time, step, name, res], i) => {
+    assert.equal(time, E.clock(E.steps[i].t), `${step} time`);
+    assert.equal(step, E.steps[i].id);
     assert.equal(name, E.steps[i].name);
-    assert.equal(res === 'hit', b.perStep[i], `${id} detected`);
+    assert.equal(res === 'hit', s.perStep[i], `${step} detected`);
   });
   const foot = [...html.matchAll(/<dt>([^<]+)<\/dt><dd>([^<]+)<\/dd>/g)].map(m => m[2]);
-  assert.deepEqual(foot, [`${b.detected} of ${b.total}`, E.duration(b.mttd), E.duration(b.mttr)]);
+  assert.deepEqual(foot, [`${s.detected} of ${s.total}`, E.duration(s.mttd), E.duration(s.mttr), ...extraFoot.map(f => f(s))]);
+}
+
+test('the homepage hero shows SOC B from this model', () => heroMatches('index.html', 'b'));
+
+test('the AI evals hero shows the agentic SOC A from this model', () => {
+  assert.equal(E.socs.find(s => s.id === 'a').type, 'Agentic SOC');
+  heroMatches(path.join('ai', 'index.html'), 'a', [s => String(s.falseAlarms)]);
+});
+
+test('every local link on the landing pages resolves', () => {
+  for (const page of ['index.html', path.join('ai', 'index.html')]) {
+    const file = path.join(__dirname, '..', '..', page);
+    for (const [, target] of fs.readFileSync(file, 'utf8').matchAll(/(?:href|src)="([^"]+)"/g)) {
+      if (/^(https?:|mailto:|#)/.test(target)) continue;
+      const resolved = path.resolve(path.dirname(file), target.split(/[?#]/)[0]);
+      assert.ok(fs.existsSync(resolved), `${page}: ${target}`);
+    }
+  }
 });
 
 test('time formatting', () => {
